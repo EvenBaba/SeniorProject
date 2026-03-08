@@ -32,6 +32,10 @@ from lstm_AE import (
     test_hybrid_model
 )
 
+from lstm_dual import run_dual_lstm_pipeline
+from ground_truth import create_ground_truth_labels
+from cryptobert import run_cryptobert_pipeline
+
 # Evaluation module
 from evaluation import (
     evaluate_model,
@@ -266,7 +270,31 @@ def run_supervised_lstm(df):
     return result, out
 
 # ============================================================================
-# MODEL 3: LSTM AUTOENCODER + OCSVM
+# MODEL 3: DUAL-STREAM LSTM  (Phase 2A)
+# ============================================================================
+
+def run_dual_lstm(df):
+    """
+    Dual-Stream LSTM:
+      - Stream 1: Anomaly Classifier
+      - Stream 2: Price Regressor → Surprise Factor
+    """
+
+    print("\n" + "="*80)
+    print("MODEL 3: DUAL-STREAM LSTM  (Classifier + Price Regressor)")
+    print("="*80)
+
+    eval_result, results_df = run_dual_lstm_pipeline(df, CONFIG)
+
+    # Save detailed results (includes Surprise Factor per day)
+    results_df.to_csv(f"{CONFIG['output_dir']}/dual_lstm_results.csv")
+    print(f"  Dual LSTM results saved → {CONFIG['output_dir']}/dual_lstm_results.csv")
+
+    return eval_result, results_df
+
+
+# ============================================================================
+# MODEL 4: LSTM AUTOENCODER + OCSVM
 # ============================================================================
 
 def run_autoencoder_hybrid(df):
@@ -437,8 +465,12 @@ def main():
     # Model 3: Supervised LSTM
     sup_result, sup_out = run_supervised_lstm(df)
     all_results['Supervised LSTM'] = sup_result
-    
-    # Model 4: Autoencoder + OCSVM
+
+    # Model 4: Dual-Stream LSTM (Phase 2A)
+    dual_result, dual_out = run_dual_lstm(df)
+    all_results['Dual-Stream LSTM'] = dual_result
+
+    # Model 5: Autoencoder + OCSVM
     ae_result, ae_results_df = run_autoencoder_hybrid(df)
     all_results['LSTM Autoencoder + OCSVM'] = ae_result
     
@@ -461,7 +493,10 @@ def main():
     # Save supervised results
     sup_out.to_csv(f"{CONFIG['output_dir']}/supervised_lstm_results.csv")
     print(f"Supervised LSTM results saved")
-    
+
+    # Save dual-stream results (already saved inside run_dual_lstm, confirm here)
+    print(f"Dual-Stream LSTM results saved")
+
     # Save autoencoder results
     ae_results_df.to_csv(f"{CONFIG['output_dir']}/autoencoder_ocsvm_results.csv")
     print(f"Autoencoder + OCSVM results saved")
@@ -483,6 +518,7 @@ def main():
     print(f"  - evaluation_summary.txt")
     print(f"  - unsupervised_lstm_results.csv")
     print(f"  - supervised_lstm_results.csv")
+    print(f"  - dual_lstm_results.csv          ← includes Surprise Factor")
     print(f"  - autoencoder_ocsvm_results.csv")
     print(f"  - Individual model metrics and plots")
     
@@ -539,6 +575,53 @@ def quick_run_supervised():
     return result, out
 
 
+def quick_run_dual():
+    """Quick run: Dual-Stream LSTM only"""
+    df, split_idx = prepare_data()
+    result, out = run_dual_lstm(df)
+    evaluate_model(
+        result['y_true'],
+        result['y_pred'],
+        result['y_prob'],
+        model_name='Dual-Stream LSTM',
+        plot_curves=True
+    )
+    print("\n[SURPRISE FACTOR SUMMARY]")
+    print(out[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
+    return result, out
+
+
+def quick_run_dual_gt():
+    """Quick run: Dual-Stream LSTM with real-world ground truth labels"""
+    df, split_idx = prepare_data()
+
+    # Attach ground truth labels to the dataframe
+    df, event_report = create_ground_truth_labels(df, window_days=1)
+
+    # Run dual LSTM using ground truth labels instead of statistical labels
+    eval_result, results_df = run_dual_lstm_pipeline(
+        df, CONFIG, label_col="Anomaly_GroundTruth"
+    )
+
+    # Save
+    results_df.to_csv(f"{CONFIG['output_dir']}/dual_lstm_gt_results.csv")
+    print(f"  Ground truth results saved → {CONFIG['output_dir']}/dual_lstm_gt_results.csv")
+
+    evaluate_model(
+        eval_result['y_true'],
+        eval_result['y_pred'],
+        eval_result['y_prob'],
+        model_name='Dual-Stream LSTM (Ground Truth)',
+        plot_curves=True,
+        save_dir=CONFIG['output_dir']
+    )
+
+    print("\n[SURPRISE FACTOR SUMMARY — GROUND TRUTH RUN]")
+    print(results_df[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
+
+    return eval_result, results_df, event_report
+
+
 def quick_run_autoencoder():
     """Quick run: Autoencoder + OCSVM only"""
     df, split_idx = prepare_data()
@@ -553,17 +636,51 @@ def quick_run_autoencoder():
     return result, results_df
 
 
+def quick_run_cryptobert():
+    """
+    Quick run: Phase 2B — CryptoBERT Sentiment Analysis.
+
+    Fetches BTC news from CryptoPanic, classifies each headline with
+    CryptoBERT (Bullish / Bearish / Neutral), aggregates to daily sentiment
+    scores, and merges with the price DataFrame.
+
+    No ML training involved — pure NLP inference + analysis.
+    """
+    df, split_idx = prepare_data()
+
+    merged = run_cryptobert_pipeline(
+        price_df=df,
+        config=CONFIG,
+        anomaly_col="Anomaly_Statistical",
+    )
+
+    print("\n[SENTIMENT SAMPLE — last 10 days]")
+    cols = ["Close", "sentiment_net", "sentiment_bullish", "sentiment_bearish",
+            "headline_count", "Anomaly_Statistical"]
+    print(merged[cols].tail(10).to_string())
+
+    # Save enriched DataFrame
+    os.makedirs(CONFIG["output_dir"], exist_ok=True)
+    merged.to_csv(f"{CONFIG['output_dir']}/cryptobert_merged.csv")
+    print(f"\n  Merged DataFrame saved → {CONFIG['output_dir']}/cryptobert_merged.csv")
+
+    return merged
+
+
 # ============================================================================
 # ENTRY POINT
 # ============================================================================
 
 if __name__ == "__main__":
-    
+
     # Option 1: Run full pipeline (all models)
-    comparison_df, all_results = main()
-    
+    # comparison_df, all_results = main()
+
     # Option 2: Quick run specific model (uncomment to use)
     # comparison_df = quick_run_statistical()
     # result, out = quick_run_unsupervised()
     # result, out = quick_run_supervised()
+    # result, out = quick_run_dual()                        # statistical labels
+    # result, out, report = quick_run_dual_gt()             # real-world ground truth labels
     # result, results_df = quick_run_autoencoder()
+    merged = quick_run_cryptobert()                         # Phase 2B: sentiment

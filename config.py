@@ -13,5 +13,14 @@ CONFIG = {
     'ae_batch_size': 32,
     'ae_threshold_quantile': 0.995,
     'ocsvm_nu': 0.005,
-    'output_dir': 'results'
+    'output_dir': 'results',
+
+    # --- Phase 2A: Dual-Stream LSTM ---
+    'dual_epochs': 100,          # max training epochs
+    'dual_batch_size': 16,       # batch size
+    'dual_threshold': 0.3,       # anomaly classification threshold
+
+    # --- Phase 2B: CryptoBERT Sentiment (GDELT — free, no API key) ---
+    'gdelt_sleep_sec':       1.0,  # seconds between GDELT requests (be polite)
+    'cryptobert_batch_size': 32,   # article titles per CryptoBERT inference batch
 }
