@@ -1,0 +1,42 @@
+date,event_type,sentiment_label,description,detected,days_to_detection,max_surprise_in_window
+2023-01-12,pump,bullish,BTC surges +15% in a week on cooling US CPI inflation data,False,,
+2023-03-10,crash,bearish,Silvergate Bank and Silicon Valley Bank collapse — crypto ba,False,,
+2023-03-17,pump,bullish,BTC rebounds sharply as markets stabilize after SVB collapse,False,,
+2023-04-14,pump,bullish,Ethereum Shapella upgrade completes — ETH staking withdrawal,False,,
+2023-06-05,crash,bearish,"SEC sues Binance, charges with operating unregistered exchan",False,,
+2023-06-06,crash,bearish,SEC sues Coinbase — continued regulatory sell-off across cry,False,,
+2023-06-15,pump,bullish,BlackRock files for Bitcoin spot ETF with SEC — major instit,False,,
+2023-08-17,crash,bearish,BTC flash crash -10% from ~$29k to ~$26k on liquidation casc,True,1.0,0.0
+2023-08-29,pump,bullish,US court rules SEC was wrong to reject Grayscale Bitcoin ETF,True,1.0,0.0
+2023-10-16,volatile,neutral,False report of iShares Bitcoin ETF approval causes brief +1,True,1.0,0.0
+2023-10-23,pump,bullish,BlackRock Bitcoin ETF ticker appears on DTCC website — renew,True,1.0,0.0
+2023-12-05,pump,bullish,BTC breaks $44k for first time since April 2022 on ETF optim,True,1.0,0.0
+2024-01-10,pump,bullish,"SEC approves Bitcoin Spot ETFs from BlackRock, Fidelity and ",True,1.0,0.0
+2024-01-11,volatile,neutral,"First trading day of Bitcoin Spot ETFs — record volume, high",True,2.0,0.0
+2024-02-28,pump,bullish,BTC reclaims $60k for first time since November 2021 bull ru,True,1.0,0.0
+2024-03-05,pump,bullish,BTC breaks its 2021 all-time high of ~$69k setting a new ATH,True,1.0,0.0
+2024-03-14,pump,bullish,"BTC reaches new all-time high of approximately $73,750",True,1.0,0.0
+2024-04-19,volatile,neutral,Pre-halving volatility — BTC drops sharply to around $60k,True,1.0,0.0
+2024-04-20,volatile,neutral,Bitcoin fourth halving — block reward cut from 6.25 to 3.125,True,2.0,0.0
+2024-05-23,pump,bullish,SEC approves Ethereum spot ETF applications — bullish signal,True,1.0,0.0
+2024-06-07,crash,bearish,BTC drops approximately 10% on stronger than expected US job,True,1.0,0.0
+2024-07-05,crash,bearish,German government begins selling confiscated BTC holdings — ,True,1.0,0.0
+2024-07-16,pump,bullish,German government completes BTC sales — selling pressure lif,True,1.0,0.0
+2024-08-05,crash,bearish,"Global market crash driven by Japan carry trade unwind, BTC ",True,1.0,0.0
+2024-08-06,crash,bearish,Continued sell-off from Japan carry trade unwind across all ,True,2.0,0.0
+2024-09-18,pump,bullish,US Federal Reserve cuts interest rates 50 basis points — ris,True,1.0,0.0
+2024-10-14,pump,bullish,BTC breaks $65k resistance — momentum building ahead of US e,True,1.0,0.0
+2024-11-05,pump,bullish,"US Election Day — Trump wins presidency, BTC begins historic",True,1.0,0.0
+2024-11-06,pump,bullish,BTC surges past $75k driven by Trump election victory and pr,True,2.0,0.0
+2024-11-13,pump,bullish,BTC crosses $90k for the first time in history,True,1.0,0.0
+2024-12-05,pump,bullish,BTC crosses $100k for the first time ever — historic milesto,True,1.0,0.0
+2024-12-17,pump,bullish,"BTC reaches all-time high of approximately $108,000",True,1.0,0.0
+2024-12-18,crash,bearish,Fed signals fewer rate cuts in 2025 — BTC flash crashes from,True,2.0,0.0
+2025-01-20,volatile,neutral,Trump inauguration — BTC volatile with initial pump then sha,True,1.0,0.0
+2025-01-23,pump,bullish,Trump signs executive order creating Presidential Working Gr,True,3.0,0.0
+2025-02-03,crash,bearish,BTC flash crash from ~$90k to ~$78k on tariff war escalation,True,1.0,0.0
+2025-02-25,crash,bearish,BTC drops sharply below $90k amid broader risk-off sentiment,True,1.0,0.0
+2025-03-04,pump,bullish,Trump announces US Strategic Bitcoin Reserve — executive ord,True,1.0,0.0
+2025-03-11,crash,bearish,BTC drops below $80k as Strategic Reserve disappointment set,True,1.0,0.0
+2025-04-07,crash,bearish,BTC crashes below $75k on global tariff war fears — Black Mo,True,1.0,0.0
+2025-04-09,pump,bullish,"Trump pauses tariffs for 90 days — markets surge, BTC reboun",True,3.0,0.0

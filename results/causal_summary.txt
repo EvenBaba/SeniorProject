@@ -1,0 +1,42 @@
+CAUSAL ANALYSIS REPORT -- CS402 Senior Project
+============================================================
+
+1. EVENT SENTIMENT (CryptoBERT / hardcoded)
+----------------------------------------
+  Total known events analyzed : 41
+  Bullish events              : 23
+  Bearish events              : 13
+  Neutral events              : 5
+
+2. DETECTION RATE
+----------------------------------------
+  Window used                 : +/-3 days
+  Events in test set          : 41
+  Detected by dual-LSTM       : 34 (82.9%)
+  Missed                      : 7 (17.1%)
+    crash       : 10/13 (76.9%)
+    pump        : 19/23 (82.6%)
+    volatile    : 5/5 (100.0%)
+
+3. CAUSAL VERDICT BREAKDOWN
+----------------------------------------
+  Total predicted anomaly days: 91
+  news_driven                 : 91 (100.0%)
+  internal                    : 0 (0.0%)
+
+4. SURPRISE FACTOR ANALYSIS
+----------------------------------------
+  News-driven -- mean  : 0.00%  std: 0.00%
+  Internal    -- mean  : nan%  std: nan%
+
+  Spearman r (sentiment vs SF): nan  p=nan
+
+5. INTERPRETATION
+----------------------------------------
+  The dual-LSTM anomaly detector was trained purely on price/volume
+  features with no access to news. The causal analysis shows what
+  fraction of its predictions correspond to known real-world events.
+  A high news_driven rate validates that the model captures genuine
+  market disruptions. A significantly higher Surprise Factor on
+  news-driven days confirms the price regressor was genuinely caught
+  off guard -- consistent with the 'Surprise Factor' hypothesis.

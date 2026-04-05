@@ -1,0 +1,72 @@
+date,title,published_at,kind,source,sentiment_label,sentiment_score
+2026-03-07,"Coinbase says new U.S. tax-reporting rules for crypto are cluttered, confusing",2026-03-07 21:00:00,news,CoinDesk,neutral,0.9143895506858826
+2026-03-07,Trump's cyber strategy vows to 'support the security' of cryptocurrencies and blockchain,2026-03-07 19:46:41,news,CoinDesk,neutral,0.7890416383743286
+2026-03-07,"Latin America’s crypto user growth outpaced U.S. by 3x in 2025, report shows",2026-03-07 18:00:00,news,CoinDesk,neutral,0.8059203624725342
+2026-03-07,Bitcoin purist Jack Dorsey says that his firm is reluctantly giving in to stablecoin craze,2026-03-07 17:24:25,news,CoinDesk,neutral,0.8125140070915222
+2026-03-07,Top Wall Street minds see AI rotation ahead as bitcoin seeks role in new cycle,2026-03-07 17:00:00,news,CoinDesk,neutral,0.78692626953125
+2026-03-07,Those who cheered U.S. Bitcoin reserve have spent year watching Trump's order languish,2026-03-07 15:00:00,news,CoinDesk,bearish,0.7544493079185486
+2026-03-07,"Bitcoin slips below $68,000 as dollar posts steepest weekly gain in a year",2026-03-07 06:15:48,news,CoinDesk,neutral,0.9582470655441284
+2026-03-07,"Bitcoin could crash by another 30% as four-year cycle gains strength, investment firm says",2026-03-07 05:44:21,news,CoinDesk,neutral,0.8326181769371033
+2026-03-06,"Why bitcoin couldn't hold $70,000 despite its best week of Wall Street news in months",2026-03-06 20:17:14,news,CoinDesk,neutral,0.9322813749313354
+2026-03-06,"BlackRock private credit fund is latest to crack, hitting crypto prices and DeFi markets",2026-03-06 17:30:48,news,CoinDesk,neutral,0.8830870985984802
+2026-03-06,"Bitcoin buyers are cashing out fast after short-lived jump to $74,000",2026-03-06 15:24:21,news,CoinDesk,neutral,0.9018687605857849
+2026-03-06,Binance tells Senate probe no accounts sent crypto directly to Iran,2026-03-06 15:01:28,news,CoinDesk,neutral,0.9261084794998169
+2026-03-06,"'No deal with Iran': Trump demands unconditional surrender, sending oil surging, bitcoin and stocks lower",2026-03-06 14:34:58,news,CoinDesk,bearish,0.8529312014579773
+2026-03-07,Here’s what happened in crypto today,2026-03-07 22:32:13,news,CoinTelegraph,neutral,0.9472818374633789
+2026-03-07,Crypto Fear and Greed Index falls back down to 'extreme fear' levels,2026-03-07 22:05:54,news,CoinTelegraph,neutral,0.8203304409980774
+2026-03-07,US Treasury report acknowledges legitimate uses of crypto mixers,2026-03-07 21:58:33,news,CoinTelegraph,neutral,0.8814979791641235
+2026-03-07,Strategy's STRC stock trading surge: How much Bitcoin can Saylor buy?,2026-03-07 15:30:40,news,CoinTelegraph,bearish,0.7037314176559448
+2026-03-07,Bitcoin dip may not be over as retail ramps up buying below $70K: Santiment,2026-03-07 06:02:01,news,CoinTelegraph,neutral,0.951298713684082
+2026-03-07,Trump’s National Cyber Strategy pledges to support crypto and blockchain,2026-03-07 05:06:17,news,CoinTelegraph,neutral,0.9220003485679626
+2026-03-07,Community banks and crypto industry ‘are allies’ in CLARITY Act debate: Exec,2026-03-07 02:53:16,news,CoinTelegraph,neutral,0.8992004990577698
+2026-03-06,"When buying Bitcoin, don’t expect profit for at least 3 years: Data",2026-03-06 23:00:00,news,CoinTelegraph,neutral,0.7979820966720581
+2026-03-06,"Odds of Bitcoin price drop to $65K rise as private credit woes, US war rattle markets",2026-03-06 22:15:00,news,CoinTelegraph,neutral,0.6096718311309814
+2026-03-06,Ex-CFO sentenced to two years after diverting $35M to crypto venture,2026-03-06 21:22:07,news,CoinTelegraph,neutral,0.9849815368652344
+2026-03-06,"Price predictions 3/6: BTC, ETH, BNB, XRP, SOL, DOGE, ADA, BCH, HYPE, XMR",2026-03-06 21:00:00,news,CoinTelegraph,neutral,0.7324150204658508
+2026-03-06,US senator calls for anti-corruption provisions in crypto bills,2026-03-06 20:13:09,news,CoinTelegraph,neutral,0.8846418857574463
+2026-03-06,Bitcoin price falls under $70K again: Three key reasons,2026-03-06 20:00:55,news,CoinTelegraph,neutral,0.906510591506958
+2026-03-06,Bitcoin recovery meets DeFi tensions as Aave rift deepens: Finance Redefined,2026-03-06 19:00:00,news,CoinTelegraph,neutral,0.5376791954040527
+2026-03-06,Utexo Raises $7.5M to Launch Bitcoin-Native USDT Settlement Infrastructure,2026-03-06 16:57:57,news,Bitcoin Mag,neutral,0.630495548248291
+2026-03-06,Kazakhstan’s Central Bank to Channel $350 Million of Reserves into Crypto and Bitcoin  Investments,2026-03-06 16:09:53,news,Bitcoin Mag,bullish,0.6898306012153625
+2026-03-06,Russia Considers Simplified Licensing Path for Bank-Run Crypto Exchanges,2026-03-06 14:18:15,news,Bitcoin Mag,bullish,0.6239371299743652
+2026-03-06,"Strike Secures New York BitLicense, Opening Bitcoin Financial Services to State Residents",2026-03-06 13:48:20,news,Bitcoin Mag,bullish,0.5984740257263184
+2026-03-05,"Solo Satoshi Launches Bitaxe Turbo Touch, an Open-Source Touchscreen Bitcoin Miner",2026-03-05 21:05:20,news,Bitcoin Mag,bullish,0.589921236038208
+2026-03-05,Mike Selig Confirmed As A Bitcoin 2026 Speaker,2026-03-05 20:43:26,news,Bitcoin Mag,bullish,0.5830466747283936
+2026-03-05,"Crypto Legislation Stalls in Washington as Banks, White House Clash Over Stablecoin Yields",2026-03-05 19:21:44,news,Bitcoin Mag,neutral,0.568801760673523
+2026-03-05,U.S. Federal Contractor’s Son Arrested in $46 Million Theft of Seized Government Crypto,2026-03-05 15:49:07,news,Bitcoin Mag,neutral,0.7684410214424133
+2026-03-05,"American Bitcoin Expands Treasury to 6,500 BTC as Eric Trump Accuses Big Banks of Lobbying Against Crypto",2026-03-05 15:37:28,news,Bitcoin Mag,neutral,0.5707286596298218
+2026-03-07,Inside the Quest at Colossus to Replace Visa and Mastercard With KYC-Less Crypto Cards,2026-03-07 18:01:02,news,Decrypt,neutral,0.5787715911865234
+2026-03-06,CFO Gets Prison Time After Losing $35 Million of Company Money in Crypto Side Hustle,2026-03-06 19:00:51,news,Decrypt,neutral,0.5662696957588196
+2026-03-06,Kazakhstan's Central Bank Will Invest Up to $350 Million in Crypto Assets: Reuters,2026-03-06 16:42:45,news,Decrypt,neutral,0.9074821472167969
+2026-03-06,Dubai Orders Crypto Exchange KuCoin to Stop Offering Services to Residents,2026-03-06 15:40:53,news,Decrypt,bullish,0.5489125847816467
+2026-03-06,Bitcoin Dives Below $69K as US Loses 92K Jobs in February,2026-03-06 15:05:44,news,Decrypt,neutral,0.549942672252655
+2026-03-06,Morning Minute: The NYSE Just Bought Into A Major Crypto Exchange,2026-03-06 13:09:46,news,Decrypt,bullish,0.5081467032432556
+2026-03-06,"Bitcoin ETFs Shed $228M, But Longer-Term Flows Stabilize",2026-03-06 12:52:56,news,Decrypt,neutral,0.6612976789474487
+2026-03-06,Vancouver Moves to Close Bitcoin Reserve Proposal After Legal Review,2026-03-06 03:40:07,news,Decrypt,neutral,0.5498120188713074
+2026-03-06,Crypto Exchange OKX Debuts Social Platform Linking Posts to Trades,2026-03-06 03:01:02,news,Decrypt,bullish,0.5479485392570496
+2026-03-05,Dogecoin Down Bad as Bitcoin Gives Up Latest Gains,2026-03-05 21:12:09,news,Decrypt,neutral,0.3704604208469391
+2026-03-05,Iran Regime's Crypto Activity Topped $3 Billion as Illicit Transactions Surged in 2025: Report,2026-03-05 21:00:22,news,Decrypt,neutral,0.6436029672622681
+2026-03-05,Penguin Apparel Brand Targets Crypto IP Pudgy Penguins in Trademark Infringement Lawsuit,2026-03-05 20:31:02,news,Decrypt,neutral,0.6747867465019226
+2026-03-05,ZeroHash Applies for National Trust Bank Charter as OCC Crypto Pipeline Grows,2026-03-05 17:28:09,news,Decrypt,neutral,0.6000678539276123
+2026-03-05,"Bitcoin Price Predictions Flip Bullish, But Ethereum Is Still Stuck",2026-03-05 16:36:02,news,Decrypt,bullish,0.536868155002594
+2026-03-05,"Federal Contractor’s Son Arrested, Charged With Stealing $46 Million From US Crypto Stockpile",2026-03-05 16:08:42,news,Decrypt,neutral,0.6116788983345032
+2026-03-05,Core Scientific Secures Up to $1 Billion From Morgan Stanley for Pivot From Bitcoin Mining to AI,2026-03-05 15:33:08,news,Decrypt,bullish,0.5545538663864136
+2026-03-05,"Ethereum ETFs Draw In $169M, Highest Level in Two Months",2026-03-05 12:44:35,news,Decrypt,neutral,0.6615735292434692
+2026-03-05,"Canadian Robbed of Crypto via ATM Kiosk, Recovery Efforts Lead to Another Scam Attempt",2026-03-05 04:34:58,news,Decrypt,neutral,0.5248385667800903
+2026-03-05,"How Policy Shifts, Geopolitical Tensions Are Reshaping the Bitcoin Trade",2026-03-05 01:02:06,news,Decrypt,neutral,0.4759436547756195
+2026-01-23,Trump sues JPMorgan for $5B! Ledger prepares for $4B IPO! “Crypto Adoption is no longer reversible” says PWC!,2026-01-23 16:40:55,news,Decrypt,neutral,0.5137755274772644
+2026-01-22,Crypto rebounds after Trump TACO’s on Tariffs! BitGo $2.1B IPO! Solana’s SKR token soars 250% FDV!,2026-01-22 16:14:50,news,Decrypt,bullish,0.516890287399292
+2026-01-21,Trump’s speech at Davos gives small boost to Crypto! Saylor buys $2.13B BTC! Blondish Interview!,2026-01-21 16:17:26,news,Decrypt,bullish,0.6261119246482849
+2026-01-20,Crypto sells off amidst Trump Tariff Turmoil! $Trove falls 90% in awful TGE! Pump Fund announced!,2026-01-20 16:07:15,news,Decrypt,neutral,0.8248026967048645
+2026-01-15,"Massive Coinbase News! Bitcoin Rips to $96,750! Football.Fun TGE Interview with Founder!",2026-01-15 16:49:34,news,Decrypt,bullish,0.7282769083976746
+2026-01-14,Are we back? Crypto is Green! Solana Intern goes rogue! Pump up 13%! Monero hits another ATH!,2026-01-14 16:38:32,news,Decrypt,bullish,0.7637638449668884
+2026-01-12,A16z raise $15B! Jerome Powell vs Trump! Crypto remains flat! Special Guest: Dudas!,2026-01-12 17:15:46,news,Decrypt,bullish,0.6883019208908081
+2026-01-09,ZEC Rebounds 11%! Trump says he won’t pardon Sam Bankman-Fried! Florida revisits it’s Strategic Bitcoin Reserve!,2026-01-09 17:17:12,news,Decrypt,neutral,0.6153943538665771
+2026-01-08,The ZCash situation explained! Interview with ZEC bull Mert! BTC below $90K! ZEC falls 19%!,2026-01-08 17:04:56,news,Decrypt,neutral,0.862002968788147
+2026-01-07,"First 2026 Dip! BTC at 92K! Morgan Stanley file for BTC, ETH & SOL ETFs! Hyperliquid Airdrop Speculation!",2026-01-07 16:14:54,news,Decrypt,neutral,0.5911586880683899
+2026-01-06,Crypto starts 2026 STRONG! Venezuela Impacts on the market! Lighter TGE reactions!,2026-01-06 18:16:42,news,Decrypt,bullish,0.5274468064308167
+2026-01-06,Global Crypto MCap up to $3.22 Trillion! XRP up 12%! Japan Endorse Crypto! Fear & Greed back to Neutral!,2026-01-06 16:13:32,news,Decrypt,bullish,0.5257217884063721
+2026-01-05,Crypto is Green! Up 6-9%! Memes outperform! Pepe up 67%! Infinex Founder Interview!,2026-01-05 16:28:36,news,Decrypt,bullish,0.6995655298233032
+2026-01-05,Crypto Wallets Can ‘Directly Compete With Neobanks',2026-01-05 13:44:47,news,Decrypt,neutral,0.5568051338195801
+2025-12-30,2026 Crypto Predictions! Tom Lee still buying ETH! Rekt tease WorldStar collab!,2025-12-30 16:29:12,news,Decrypt,neutral,0.5427858233451843
+2025-12-29,The White Whale up 10x in a week! Lighter TGE! Saylor buys $109M BTC!,2025-12-29 16:10:19,news,Decrypt,bullish,0.6005924344062805

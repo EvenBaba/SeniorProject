@@ -21,6 +21,6 @@ CONFIG = {
     'dual_threshold': 0.3,       # anomaly classification threshold
 
     # --- Phase 2B: CryptoBERT Sentiment (GDELT — free, no API key) ---
-    'gdelt_sleep_sec':       1.0,  # seconds between GDELT requests (be polite)
+    'news_sleep_sec': 0.5,
     'cryptobert_batch_size': 32,   # article titles per CryptoBERT inference batch
 }

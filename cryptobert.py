@@ -4,29 +4,33 @@ PHASE 2B — CryptoBERT Sentiment Analysis
 Uses the CryptoBERT model (ElKulako/cryptobert) from HuggingFace to classify
 crypto news headlines as Bullish / Bearish / Neutral.
 
-Data source: CryptoPanic API (free tier, no key required for public feed)
-             Falls back to synthetic stub if API is unreachable.
+Data source (priority order):
+  1. free-crypto-news.vercel.app — free, no API key, archive + live BTC feed
+                                   archive updated every 6h, live feed real-time
+  2. CoinDesk RSS               — free, no key, recent articles only (fallback)
 
 Pipeline:
-  1. fetch_crypto_news()      → raw headline DataFrame
-  2. run_cryptobert()         → per-headline sentiment scores
-  3. aggregate_daily_sentiment() → daily Bullish/Bearish/Neutral scores + net score
-  4. merge_with_price_df()    → joined DataFrame for downstream analysis
-  5. run_cryptobert_pipeline()→ end-to-end convenience wrapper
+  1. fetch_crypto_news()         → raw headline DataFrame
+  2. _fetch_from_cryptocurrencycv() → primary source
+  3. _fetch_from_coindesk_rss()     → fallback source
+  4. run_cryptobert()            → per-headline sentiment scores
+  5. aggregate_daily_sentiment() → daily Bullish/Bearish/Neutral scores + net score
+  6. merge_with_price_df()       → joined DataFrame for downstream analysis
+  7. run_cryptobert_pipeline()   → end-to-end convenience wrapper
 
 Output columns added to price DataFrame:
   sentiment_bullish   — fraction of headlines that day classified Bullish
   sentiment_bearish   — fraction classified Bearish
   sentiment_neutral   — fraction classified Neutral
-  sentiment_net       — bullish - bearish  (range −1 … +1)
+  sentiment_net       — bullish - bearish  (range -1 … +1)
   headline_count      — number of headlines that day
 """
 
 import os
 import time
 import warnings
-import datetime
 import requests
+import xml.etree.ElementTree as ET
 import numpy as np
 import pandas as pd
 
@@ -84,114 +88,276 @@ def _load_model():
 
 
 # ============================================================================
-# DATA FETCHING — GDELT Doc 2.0 API (completely free, no API key required)
+# DATA FETCHING — PRIMARY: free-crypto-news (Vercel)
 # ============================================================================
 #
-# GDELT monitors global news media and is fully free with no registration.
-# Coverage: 2015 to present, updated every 15 minutes.
-# Docs: https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/
+# Open-source, completely free, no API key required.
+# Base URL: https://free-crypto-news.vercel.app
+# GitHub:   https://github.com/nirholas/free-crypto-news
 #
-# Endpoint: https://api.gdeltproject.org/api/v2/doc/doc
-# Max 250 results per request; paginate via startdatetime shifting.
+# Two endpoints used:
+#   /api/archive  — historical news, queryable by start_date / end_date
+#   /api/bitcoin  — live Bitcoin-specific feed (recent articles)
+#
+# The archive is updated every 6 hours via GitHub Actions.
+# The /api/bitcoin feed is updated in real-time.
 
-GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-GDELT_QUERY = "bitcoin cryptocurrency BTC"
+FCN_BASE_URL    = "https://free-crypto-news.vercel.app"
+FCN_ARCHIVE_URL = f"{FCN_BASE_URL}/api/archive"
+FCN_BITCOIN_URL = f"{FCN_BASE_URL}/api/bitcoin"
 
 
-def _gdelt_dt(ts: pd.Timestamp) -> str:
-    """Convert Timestamp to GDELT datetime format: YYYYMMDDHHMMSS"""
-    return ts.strftime("%Y%m%d%H%M%S")
-
-
-def fetch_crypto_news(
-    start_date:   str,
-    end_date:     str,
-    max_per_day:  int = 10,   # articles to fetch per day-window request
-    sleep_sec:    float = 1.0,
+def _fetch_from_cryptocurrencycv(
+    start_date: str,
+    end_date:   str,
+    sleep_sec:  float = 0.5,
 ) -> pd.DataFrame:
     """
-    Fetch BTC crypto news articles via GDELT Doc 2.0 API.
+    Fetch BTC news from free-crypto-news.vercel.app.
 
-    Completely free — no API key, no registration required.
-    Covers news from 2015 to present.
+    Strategy:
+      1. Try /api/archive with start_date / end_date for historical data,
+         paginating month by month (50 articles per window).
+      2. Also call /api/bitcoin (live feed) and merge to catch recent
+         articles not yet stored in the archive.
 
-    Strategy: splits the date range into monthly windows and fires one
-    GDELT request per month (250 articles max per request).
+    Returns a DataFrame with columns: [date, title, published_at, kind, source]
 
     Parameters
     ----------
-    start_date  : "YYYY-MM-DD"
-    end_date    : "YYYY-MM-DD"
-    max_per_day : articles per monthly window (up to 250)
-    sleep_sec   : seconds between requests
-
-    Returns
-    -------
-    pd.DataFrame with columns: [date, title, published_at, kind, source]
+    start_date : "YYYY-MM-DD"
+    end_date   : "YYYY-MM-DD"
+    sleep_sec  : polite delay between requests (default 0.5s)
     """
     start_dt = pd.Timestamp(start_date)
     end_dt   = pd.Timestamp(end_date)
 
-    print(f"\n[GDELT] Fetching BTC news {start_date} → {end_date} (free, no key) …")
-
-    # Build monthly windows to stay within GDELT's 250-result cap
-    windows = []
-    cur = start_dt
-    while cur < end_dt:
-        nxt = min(cur + pd.DateOffset(months=1), end_dt)
-        windows.append((cur, nxt))
-        cur = nxt
+    print(f"\n[free-crypto-news] Fetching BTC articles {start_date} -> {end_date} …")
 
     records = []
-    for i, (win_start, win_end) in enumerate(windows):
-        params = {
-            "query":         GDELT_QUERY,
-            "mode":          "artlist",
-            "maxrecords":    250,
-            "startdatetime": _gdelt_dt(win_start),
-            "enddatetime":   _gdelt_dt(win_end),
-            "format":        "json",
-            "sort":          "datedesc",
-        }
 
+    # ------------------------------------------------------------------
+    # 1. Historical archive — paginate month by month
+    # ------------------------------------------------------------------
+    months_start = pd.date_range(start_dt, end_dt, freq="MS")
+    windows = []
+    for ms in months_start:
+        me = min(ms + pd.DateOffset(months=1) - pd.Timedelta(days=1), end_dt)
+        windows.append((ms, me))
+    if len(windows) == 0:
+        windows = [(start_dt, end_dt)]
+
+    for win_start, win_end in windows:
+        params = {
+            "start_date": win_start.strftime("%Y-%m-%d"),
+            "end_date":   win_end.strftime("%Y-%m-%d"),
+            "q":          "bitcoin BTC",
+            "limit":      50,
+        }
         try:
-            resp = requests.get(GDELT_URL, params=params, timeout=20)
+            resp = requests.get(FCN_ARCHIVE_URL, params=params, timeout=20)
             resp.raise_for_status()
             data = resp.json()
         except Exception as e:
-            print(f"[GDELT] Request failed for {win_start.date()} window: {e}")
+            print(f"[free-crypto-news]   archive {win_start.date()} -> "
+                  f"{win_end.date()} failed: {e}")
             time.sleep(sleep_sec)
             continue
 
         articles = data.get("articles", [])
         for art in articles:
-            raw_date = art.get("seendate", "")  # format: YYYYMMDDTHHMMSSZ
+            raw_date = art.get("pubDate") or art.get("published_at", "")
             try:
                 pub = pd.Timestamp(raw_date).tz_localize(None)
             except Exception:
                 continue
-
+            if pub.normalize() < start_dt or pub.normalize() > end_dt:
+                continue
             title = art.get("title", "").strip()
             if not title:
                 continue
-
             records.append({
                 "date":         pub.normalize(),
                 "title":        title,
                 "published_at": pub,
                 "kind":         "news",
-                "source":       art.get("domain", ""),
+                "source":       art.get("source", ""),
             })
 
-        print(f"[GDELT]   {win_start.date()} → {win_end.date()} : {len(articles)} articles")
+        print(f"[free-crypto-news]   archive {win_start.date()} -> "
+              f"{win_end.date()}: {len(articles)} articles")
         time.sleep(sleep_sec)
+
+    # ------------------------------------------------------------------
+    # 2. Live /api/bitcoin feed — catches articles not yet archived
+    # ------------------------------------------------------------------
+    try:
+        resp = requests.get(FCN_BITCOIN_URL, params={"limit": 50}, timeout=20)
+        resp.raise_for_status()
+        data = resp.json()
+        live_articles = data.get("articles", [])
+        added = 0
+        for art in live_articles:
+            raw_date = art.get("pubDate") or art.get("published_at", "")
+            try:
+                pub = pd.Timestamp(raw_date).tz_localize(None)
+            except Exception:
+                continue
+            if pub.normalize() < start_dt or pub.normalize() > end_dt:
+                continue
+            title = art.get("title", "").strip()
+            if not title:
+                continue
+            records.append({
+                "date":         pub.normalize(),
+                "title":        title,
+                "published_at": pub,
+                "kind":         "news",
+                "source":       art.get("source", ""),
+            })
+            added += 1
+        print(f"[free-crypto-news]   live feed: {added} additional articles in range")
+    except Exception as e:
+        print(f"[free-crypto-news]   live feed failed: {e}")
 
     if records:
         df = pd.DataFrame(records).drop_duplicates(subset=["title"])
-        print(f"[GDELT] Total unique articles: {len(df)} across {len(windows)} window(s).")
+        print(f"[free-crypto-news] Total unique articles: {len(df)}")
         return df
 
-    print("[GDELT] No articles fetched — returning empty DataFrame.")
+    print("[free-crypto-news] No articles returned.")
+    return pd.DataFrame(columns=["date", "title", "published_at", "kind", "source"])
+
+
+# ============================================================================
+# DATA FETCHING — FALLBACK: CoinDesk RSS
+# ============================================================================
+#
+# Public RSS feed from CoinDesk — no API key, no registration.
+# Covers recent articles only (typically last 30–60 days).
+# Used as a fallback when free-crypto-news.vercel.app is unreachable.
+# Feed URL: https://www.coindesk.com/arc/outboundfeeds/rss/
+
+COINDESK_RSS_URL = "https://www.coindesk.com/arc/outboundfeeds/rss/"
+
+
+def _fetch_from_coindesk_rss(
+    start_date: str,
+    end_date:   str,
+) -> pd.DataFrame:
+    """
+    Fetch recent BTC news from the CoinDesk public RSS feed.
+
+    No API key required. Returns recent articles only — typically the
+    last 30–60 days. Used as a fallback when free-crypto-news.vercel.app fails.
+
+    Parameters
+    ----------
+    start_date : "YYYY-MM-DD"  — articles before this date are dropped
+    end_date   : "YYYY-MM-DD"  — articles after this date are dropped
+    """
+    start_dt = pd.Timestamp(start_date)
+    end_dt   = pd.Timestamp(end_date)
+
+    print(f"\n[CoinDesk RSS] Fetching feed (fallback, recent articles only) …")
+
+    try:
+        resp = requests.get(COINDESK_RSS_URL, timeout=20,
+                            headers={"User-Agent": "Mozilla/5.0"})
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"[CoinDesk RSS] Request failed: {e}")
+        return pd.DataFrame(columns=["date", "title", "published_at", "kind", "source"])
+
+    try:
+        root = ET.fromstring(resp.content)
+    except ET.ParseError as e:
+        print(f"[CoinDesk RSS] XML parse error: {e}")
+        return pd.DataFrame(columns=["date", "title", "published_at", "kind", "source"])
+
+    # RSS structure: <rss><channel><item>…</item></channel></rss>
+    items = root.findall(".//item")
+    records = []
+
+    for item in items:
+        title_el = item.find("title")
+        pubdate_el = item.find("pubDate")
+
+        if title_el is None or pubdate_el is None:
+            continue
+
+        title = (title_el.text or "").strip()
+        if not title:
+            continue
+
+        try:
+            pub = pd.Timestamp(pubdate_el.text).tz_localize(None)
+        except Exception:
+            continue
+
+        # Filter to requested date range
+        if pub.normalize() < start_dt or pub.normalize() > end_dt:
+            continue
+
+        records.append({
+            "date":         pub.normalize(),
+            "title":        title,
+            "published_at": pub,
+            "kind":         "news",
+            "source":       "coindesk.com",
+        })
+
+    if records:
+        df = pd.DataFrame(records).drop_duplicates(subset=["title"])
+        print(f"[CoinDesk RSS] {len(df)} articles in range.")
+        return df
+
+    print("[CoinDesk RSS] No articles found in the requested date range.")
+    return pd.DataFrame(columns=["date", "title", "published_at", "kind", "source"])
+
+
+# ============================================================================
+# PUBLIC FETCH FUNCTION (primary + fallback combined)
+# ============================================================================
+
+def fetch_crypto_news(
+    start_date: str,
+    end_date:   str,
+    sleep_sec:  float = 0.5,
+) -> pd.DataFrame:
+    """
+    Fetch BTC crypto news headlines for CryptoBERT inference.
+
+    Tries free-crypto-news.vercel.app first (primary — archive + live BTC feed,
+    no key required). Falls back to CoinDesk RSS if the primary is unreachable.
+
+    Parameters
+    ----------
+    start_date : "YYYY-MM-DD"
+    end_date   : "YYYY-MM-DD"
+    sleep_sec  : delay between requests to free-crypto-news.vercel.app (default 0.5s)
+
+    Returns
+    -------
+    pd.DataFrame with columns: [date, title, published_at, kind, source]
+    Rows are deduplicated by title. Empty DataFrame if both sources fail.
+    """
+    # --- Primary: free-crypto-news.vercel.app ---
+    df = _fetch_from_cryptocurrencycv(start_date, end_date, sleep_sec=sleep_sec)
+
+    if not df.empty:
+        return df
+
+    # --- Fallback: CoinDesk RSS ---
+    print("\n[fetch_crypto_news] free-crypto-news returned nothing — "
+          "trying CoinDesk RSS fallback …")
+    df = _fetch_from_coindesk_rss(start_date, end_date)
+
+    if not df.empty:
+        return df
+
+    print("[fetch_crypto_news] Both sources failed. "
+          "Returning empty DataFrame — sentiment will be neutral-filled.")
     return pd.DataFrame(columns=["date", "title", "published_at", "kind", "source"])
 
 
@@ -200,7 +366,7 @@ def fetch_crypto_news(
 # ============================================================================
 
 LABEL_MAP = {
-    # CryptoBERT label names  → canonical
+    # CryptoBERT label names  -> canonical
     "Bullish":  "bullish",
     "Bearish":  "bearish",
     "Neutral":  "neutral",
@@ -220,7 +386,7 @@ def _stub_sentiment(titles):
     return [{"label": l, "score": float(s)} for l, s in zip(labels, scores)]
 
 
-def run_cryptobert(titles: list[str], batch_size: int = 32) -> list[dict]:
+def run_cryptobert(titles: list, batch_size: int = 32) -> list:
     """
     Run CryptoBERT on a list of headline strings.
 
@@ -237,7 +403,7 @@ def run_cryptobert(titles: list[str], batch_size: int = 32) -> list[dict]:
 
     for start in range(0, total, batch_size):
         batch = titles[start: start + batch_size]
-        preds = model(batch)           # list of lists (top_k=None → all labels)
+        preds = model(batch)           # list of lists (top_k=None -> all labels)
 
         for pred_set in preds:
             # pred_set = [{"label": X, "score": Y}, …] — all labels
@@ -351,9 +517,6 @@ def print_sentiment_summary(merged_df: pd.DataFrame, anomaly_col: str = "Anomaly
         print(f"\n  {'':30s}  {'Anomaly Days':>14}  {'Normal Days':>12}")
         print("  " + "-" * 62)
 
-        for label, subset in [("Anomaly", anom), ("Normal", norm)]:
-            pass   # print below
-
         def fmt(s):
             return f"{s['sentiment_net'].mean():+.4f}"
 
@@ -383,7 +546,7 @@ def run_cryptobert_pipeline(
     Steps
     -----
     1. Determine date range from price_df index
-    2. Fetch BTC news via GDELT (free, no API key)
+    2. Fetch BTC news (free-crypto-news.vercel.app -> CoinDesk RSS fallback)
     3. Run CryptoBERT inference on article titles
     4. Aggregate to daily scores
     5. Merge with price_df
@@ -392,7 +555,7 @@ def run_cryptobert_pipeline(
     Parameters
     ----------
     price_df    : DataFrame with DatetimeIndex (from statistic.py)
-    config      : CONFIG dict (for output_dir, gdelt_sleep_sec)
+    config      : CONFIG dict (for output_dir, news_sleep_sec, cryptobert_batch_size)
     anomaly_col : column for anomaly/normal breakdown in summary
 
     Returns
@@ -405,11 +568,11 @@ def run_cryptobert_pipeline(
     start_str = idx.min().strftime("%Y-%m-%d")
     end_str   = idx.max().strftime("%Y-%m-%d")
 
-    # 2. Fetch news from GDELT (no key needed)
+    # 2. Fetch news
     news_df = fetch_crypto_news(
         start_date=start_str,
         end_date=end_str,
-        sleep_sec=config.get("gdelt_sleep_sec", 1.0),
+        sleep_sec=config.get("news_sleep_sec", 0.5),
     )
 
     if news_df.empty:
@@ -433,14 +596,14 @@ def run_cryptobert_pipeline(
     output_dir = config.get("output_dir", "results")
     os.makedirs(output_dir, exist_ok=True)
     news_df.to_csv(f"{output_dir}/cryptobert_headlines.csv", index=False)
-    print(f"[CryptoBERT] Headlines + labels saved → {output_dir}/cryptobert_headlines.csv")
+    print(f"[CryptoBERT] Headlines + labels saved -> {output_dir}/cryptobert_headlines.csv")
 
     # 4. Aggregate
     daily_sent = aggregate_daily_sentiment(news_df)
 
     # Save daily scores
     daily_sent.to_csv(f"{output_dir}/cryptobert_daily_sentiment.csv")
-    print(f"[CryptoBERT] Daily sentiment saved → {output_dir}/cryptobert_daily_sentiment.csv")
+    print(f"[CryptoBERT] Daily sentiment saved -> {output_dir}/cryptobert_daily_sentiment.csv")
 
     # 5. Merge
     merged = merge_with_price_df(price_df, daily_sent)

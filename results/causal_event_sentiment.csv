@@ -1,0 +1,42 @@
+date,event_type,description,sentiment_label,sentiment_score,sentiment_numeric,sentiment_source
+2023-01-12,pump,BTC surges +15% in a week on cooling US CPI inflation data,bullish,0.86,1,hardcoded
+2023-03-10,crash,"Silvergate Bank and Silicon Valley Bank collapse — crypto banking fears, BTC drops",bearish,0.95,-1,hardcoded
+2023-03-17,pump,BTC rebounds sharply as markets stabilize after SVB collapse,bullish,0.83,1,hardcoded
+2023-04-14,pump,"Ethereum Shapella upgrade completes — ETH staking withdrawals enabled, positive for crypto",bullish,0.79,1,hardcoded
+2023-06-05,crash,"SEC sues Binance, charges with operating unregistered exchange",bearish,0.94,-1,hardcoded
+2023-06-06,crash,SEC sues Coinbase — continued regulatory sell-off across crypto markets,bearish,0.91,-1,hardcoded
+2023-06-15,pump,BlackRock files for Bitcoin spot ETF with SEC — major institutional signal,bullish,0.9,1,hardcoded
+2023-08-17,crash,BTC flash crash -10% from ~$29k to ~$26k on liquidation cascade,bearish,0.96,-1,hardcoded
+2023-08-29,pump,US court rules SEC was wrong to reject Grayscale Bitcoin ETF — legal win for crypto,bullish,0.88,1,hardcoded
+2023-10-16,volatile,False report of iShares Bitcoin ETF approval causes brief +10% pump then reversal,neutral,0.7,0,hardcoded
+2023-10-23,pump,BlackRock Bitcoin ETF ticker appears on DTCC website — renewed ETF speculation pump,bullish,0.88,1,hardcoded
+2023-12-05,pump,BTC breaks $44k for first time since April 2022 on ETF optimism,bullish,0.87,1,hardcoded
+2024-01-10,pump,"SEC approves Bitcoin Spot ETFs from BlackRock, Fidelity and others",bullish,0.97,1,hardcoded
+2024-01-11,volatile,"First trading day of Bitcoin Spot ETFs — record volume, high volatility",neutral,0.72,0,hardcoded
+2024-02-28,pump,BTC reclaims $60k for first time since November 2021 bull run peak,bullish,0.89,1,hardcoded
+2024-03-05,pump,BTC breaks its 2021 all-time high of ~$69k setting a new ATH,bullish,0.95,1,hardcoded
+2024-03-14,pump,"BTC reaches new all-time high of approximately $73,750",bullish,0.93,1,hardcoded
+2024-04-19,volatile,Pre-halving volatility — BTC drops sharply to around $60k,neutral,0.78,0,hardcoded
+2024-04-20,volatile,Bitcoin fourth halving — block reward cut from 6.25 to 3.125 BTC,neutral,0.81,0,hardcoded
+2024-05-23,pump,SEC approves Ethereum spot ETF applications — bullish signal for crypto broadly,bullish,0.88,1,hardcoded
+2024-06-07,crash,BTC drops approximately 10% on stronger than expected US jobs data macro sell-off,bearish,0.87,-1,hardcoded
+2024-07-05,crash,German government begins selling confiscated BTC holdings — $3B supply overhang,bearish,0.9,-1,hardcoded
+2024-07-16,pump,"German government completes BTC sales — selling pressure lifts, price rebounds",bullish,0.84,1,hardcoded
+2024-08-05,crash,"Global market crash driven by Japan carry trade unwind, BTC drops approximately 15%",bearish,0.97,-1,hardcoded
+2024-08-06,crash,Continued sell-off from Japan carry trade unwind across all risk assets,bearish,0.93,-1,hardcoded
+2024-09-18,pump,US Federal Reserve cuts interest rates 50 basis points — risk assets including BTC pump,bullish,0.85,1,hardcoded
+2024-10-14,pump,BTC breaks $65k resistance — momentum building ahead of US election,bullish,0.82,1,hardcoded
+2024-11-05,pump,"US Election Day — Trump wins presidency, BTC begins historic post-election rally",bullish,0.96,1,hardcoded
+2024-11-06,pump,BTC surges past $75k driven by Trump election victory and pro-crypto policy expectations,bullish,0.98,1,hardcoded
+2024-11-13,pump,BTC crosses $90k for the first time in history,bullish,0.94,1,hardcoded
+2024-12-05,pump,BTC crosses $100k for the first time ever — historic milestone,bullish,0.99,1,hardcoded
+2024-12-17,pump,"BTC reaches all-time high of approximately $108,000",bullish,0.96,1,hardcoded
+2024-12-18,crash,Fed signals fewer rate cuts in 2025 — BTC flash crashes from ~$108k,bearish,0.92,-1,hardcoded
+2025-01-20,volatile,Trump inauguration — BTC volatile with initial pump then sharp correction,neutral,0.74,0,hardcoded
+2025-01-23,pump,Trump signs executive order creating Presidential Working Group on digital assets,bullish,0.88,1,hardcoded
+2025-02-03,crash,BTC flash crash from ~$90k to ~$78k on tariff war escalation fears,bearish,0.95,-1,hardcoded
+2025-02-25,crash,BTC drops sharply below $90k amid broader risk-off sentiment and macro uncertainty,bearish,0.89,-1,hardcoded
+2025-03-04,pump,Trump announces US Strategic Bitcoin Reserve — executive order signed,bullish,0.91,1,hardcoded
+2025-03-11,crash,BTC drops below $80k as Strategic Reserve disappointment sets in — smaller than expected,bearish,0.86,-1,hardcoded
+2025-04-07,crash,BTC crashes below $75k on global tariff war fears — Black Monday style selloff,bearish,0.97,-1,hardcoded
+2025-04-09,pump,"Trump pauses tariffs for 90 days — markets surge, BTC rebounds sharply",bullish,0.94,1,hardcoded
