@@ -6,14 +6,22 @@ import matplotlib.pyplot as plt
 limit = 1000
 THRESHOLD_Z = 2.0  # Z-Score threshold for anomaly detection
 
-def fetch_cryptocurrency_data():
-    
-    # --- A. Fetching Raw Data ---
+def fetch_cryptocurrency_data(symbol='BTC/USDT', timeframe='1d', limit=1000):
+    """
+    Fetch OHLCV data from Binance via ccxt.
+
+    Parameters
+    ----------
+    symbol    : trading pair, e.g. 'BTC/USDT', 'ETH/USDT', 'SOL/USDT'
+    timeframe : candle interval, e.g. '1d', '4h', '1h'
+    limit     : number of candles to fetch (default 1000)
+
+    Any asset available on Binance can be used.
+    Check available symbols at: https://www.binance.com/en/markets
+    """
     exchange = ccxt.binance()
-    
-    symbol = 'BTC/USDT'
-    timeframe = '1d'
-    limit = 1000         # Fetch last 1000 days
+
+    print(f"Fetching {symbol} ({timeframe}, last {limit} candles)...")
 
     try:
         ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
@@ -295,7 +303,7 @@ def plot_zscore_anomaly(df, tail=200):
 
     plt.figure(figsize=(15, 6))
     plt.plot(df_plot.index, df_plot['Close'], 
-             label='BTC/USDT Closing Prices', color='blue', linewidth=1.5)
+             label='Closing Prices', color='blue', linewidth=1.5)
     plt.scatter(anomalies.index, anomalies['Close'], 
                 color='red', marker='o', s=50,
                 label=f'Z-Score Anomaly (Total: {len(anomalies)})')
@@ -319,7 +327,7 @@ def plot_ewma_anomaly(df, tail=200):
 
     plt.figure(figsize=(15, 6))
     plt.plot(df_plot.index, df_plot['Close'], 
-             label='BTC/USDT Closing Prices', color='blue', linewidth=1.5)
+             label='Closing Prices', color='blue', linewidth=1.5)
     plt.plot(df_plot.index, df_plot['EWMA_Close'], 
              label='EWMA Close', color='orange', linewidth=1.5)
     plt.scatter(anomalies.index, anomalies['Close'], 

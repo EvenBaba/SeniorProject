@@ -1,42 +1,41 @@
 CAUSAL ANALYSIS REPORT -- CS402 Senior Project
+Asset: BTC/USDT
 ============================================================
 
-1. EVENT SENTIMENT (CryptoBERT / hardcoded)
+METHOD
 ----------------------------------------
-  Total known events analyzed : 41
-  Bullish events              : 23
-  Bearish events              : 13
-  Neutral events              : 5
+  The dual-stream LSTM price regressor predicts next-day
+  closing price. The Surprise Factor measures how much the
+  actual price deviated from the model prediction.
+  Anomalies with SF_Z >= 1.0 -> external_shock
+  Anomalies with SF_Z <  1.0 -> internal_mechanics
 
-2. DETECTION RATE
+RESULTS
 ----------------------------------------
-  Window used                 : +/-3 days
-  Events in test set          : 41
-  Detected by dual-LSTM       : 34 (82.9%)
-  Missed                      : 7 (17.1%)
-    crash       : 10/13 (76.9%)
-    pump        : 19/23 (82.6%)
-    volatile    : 5/5 (100.0%)
+  Total anomaly days   : 9
+  External shock       : 3  (33.3%)
+  Internal mechanics   : 6  (66.7%)
 
-3. CAUSAL VERDICT BREAKDOWN
+SURPRISE FACTOR
 ----------------------------------------
-  Total predicted anomaly days: 91
-  news_driven                 : 91 (100.0%)
-  internal                    : 0 (0.0%)
+  All days mean SF     : 14.93%
+  Anomaly days mean SF : 23.14%
+  External mean SF     : 30.26%
+  Internal mean SF     : 19.59%
+  SF ratio (ext/int)   : 1.54x
+  Mann-Whitney p       : 0.0119  [SIGNIFICANT]
 
-4. SURPRISE FACTOR ANALYSIS
+INTERPRETATION
 ----------------------------------------
-  News-driven -- mean  : 0.00%  std: 0.00%
-  Internal    -- mean  : nan%  std: nan%
+  High SF_Z on an anomaly day = the price regressor was
+  genuinely blindsided. Historical price patterns alone
+  could not anticipate the move. Consistent with external
+  events (news, macro, regulatory shocks).
+  Low SF_Z = unusual patterns were visible in price history
+  before the anomaly. Consistent with internal mechanics.
 
-  Spearman r (sentiment vs SF): nan  p=nan
-
-5. INTERPRETATION
+NOTE
 ----------------------------------------
-  The dual-LSTM anomaly detector was trained purely on price/volume
-  features with no access to news. The causal analysis shows what
-  fraction of its predictions correspond to known real-world events.
-  A high news_driven rate validates that the model captures genuine
-  market disruptions. A significantly higher Surprise Factor on
-  news-driven days confirms the price regressor was genuinely caught
-  off guard -- consistent with the 'Surprise Factor' hypothesis.
+  No external news API required.
+  Fully generalizable -- this exact pipeline runs on any
+  asset by changing the symbol in config.py.

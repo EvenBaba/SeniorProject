@@ -1,7 +1,8 @@
 """
 MAIN.PY - COMPLETE ANOMALY DETECTION PIPELINE
-Updated to use all fixed modules (no data leakage)
-Phase 2B: Causal analysis using ground truth events + hardcoded sentiment (no API needed)
+Supports any Binance trading pair -- change 'symbol' in config.py to switch assets.
+
+Phase 2B: Surprise Factor causal analysis (no API, no hardcoded events)
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -34,7 +35,7 @@ from lstm_AE import (
 )
 
 from lstm_dual import run_dual_lstm_pipeline
-from ground_truth import create_ground_truth_labels, KNOWN_BTC_EVENTS
+from ground_truth import create_ground_truth_labels
 from causal_analysis import run_causal_analysis_pipeline
 
 from evaluation import (
@@ -45,6 +46,7 @@ from evaluation import (
 )
 
 from config import CONFIG
+from asset_selector import select_asset
 
 os.makedirs(CONFIG['output_dir'], exist_ok=True)
 
@@ -53,14 +55,33 @@ os.makedirs(CONFIG['output_dir'], exist_ok=True)
 # DATA PREPARATION
 # ============================================================================
 
-def prepare_data():
-    """Fetch and preprocess data with proper train/test split (no leakage)"""
+def prepare_data(symbol=None, timeframe=None, limit=None):
+    """
+    Fetch and preprocess data.
+    If symbol/timeframe/limit are not provided, reads from CONFIG.
+    Pass them in from select_asset() to override CONFIG at runtime.
+    """
+    symbol    = symbol    or CONFIG['symbol']
+    timeframe = timeframe or CONFIG['timeframe']
+    limit     = limit     or CONFIG['limit']
+
+    # Update CONFIG so downstream modules see the selected asset
+    CONFIG['symbol']    = symbol
+    CONFIG['timeframe'] = timeframe
+    CONFIG['limit']     = limit
+
     print("\n" + "="*80)
     print("DATA PREPARATION")
     print("="*80)
+    print(f"  Asset    : {symbol}")
+    print(f"  Timeframe: {timeframe}")
 
-    print("\n[1/2] Fetching cryptocurrency data...")
-    df_raw = fetch_cryptocurrency_data()
+    print("\n[1/2] Fetching data...")
+    df_raw = fetch_cryptocurrency_data(
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit
+    )
 
     if df_raw is None:
         print("Data fetch failed.")
@@ -90,7 +111,6 @@ def prepare_data():
 # ============================================================================
 
 def run_statistical_baseline(df, split_idx):
-    """Statistical methods are already computed in preprocessing"""
     print("\n" + "="*80)
     print("MODEL 1: STATISTICAL METHODS (BASELINE)")
     print("="*80)
@@ -125,7 +145,6 @@ def run_statistical_baseline(df, split_idx):
 # ============================================================================
 
 def run_unsupervised_lstm(df):
-    """Unsupervised LSTM (forecast-based anomaly detection)"""
     print("\n" + "="*80)
     print("MODEL 2: UNSUPERVISED LSTM")
     print("="*80)
@@ -175,7 +194,6 @@ def run_unsupervised_lstm(df):
 # ============================================================================
 
 def run_supervised_lstm(df):
-    """Supervised LSTM (binary classification)"""
     print("\n" + "="*80)
     print("MODEL 2: SUPERVISED LSTM")
     print("="*80)
@@ -235,7 +253,6 @@ def run_dual_lstm(df):
 # ============================================================================
 
 def run_autoencoder_hybrid(df):
-    """LSTM Autoencoder + One-Class SVM (hybrid approach)"""
     print("\n" + "="*80)
     print("MODEL 4: LSTM AUTOENCODER + OCSVM")
     print("="*80)
@@ -278,7 +295,6 @@ def run_autoencoder_hybrid(df):
 # ============================================================================
 
 def evaluate_all_models(all_results):
-    """Evaluate and compare all models"""
     print("\n" + "="*80)
     print("MODEL EVALUATION AND COMPARISON")
     print("="*80)
@@ -322,8 +338,7 @@ def evaluate_all_models(all_results):
         save_path=f"{CONFIG['output_dir']}/evaluation_summary.txt"
     )
 
-    print(f"\nEvaluation complete")
-    print(f"   All results saved to: {CONFIG['output_dir']}/")
+    print(f"\nEvaluation complete. All results saved to: {CONFIG['output_dir']}/")
     return comparison_df
 
 
@@ -332,7 +347,6 @@ def evaluate_all_models(all_results):
 # ============================================================================
 
 def main():
-    """Main execution function"""
     print("\n" + "="*80)
     print("ANOMALY DETECTION PIPELINE - MAIN EXECUTION")
     print("="*80)
@@ -370,43 +384,29 @@ def main():
     print("="*80)
 
     unsup_out.to_csv(f"{CONFIG['output_dir']}/unsupervised_lstm_results.csv")
-    print(f"Unsupervised LSTM results saved")
-
     sup_out.to_csv(f"{CONFIG['output_dir']}/supervised_lstm_results.csv")
-    print(f"Supervised LSTM results saved")
-
-    print(f"Dual-Stream LSTM results saved")
-
     ae_results_df.to_csv(f"{CONFIG['output_dir']}/autoencoder_ocsvm_results.csv")
-    print(f"Autoencoder + OCSVM results saved")
+    print("All results saved.")
+
+    # Phase 2B: causal analysis on the dual-LSTM results
+    print("\n" + "="*80)
+    print("PHASE 2B: CAUSAL ANALYSIS")
+    print("="*80)
+    run_causal_analysis_pipeline(
+        dual_results_df=dual_out,
+        config=CONFIG,
+        sf_threshold=CONFIG.get('sf_z_threshold', 1.0),
+        anomaly_col="Anomaly_Pred"
+    )
 
     print("\n" + "="*80)
     print("PIPELINE COMPLETE!")
     print("="*80)
 
-    print("\n[SUMMARY]")
-    print(f"  Total models tested: {len(all_results)}")
-    print(f"  Results directory: {CONFIG['output_dir']}/")
-    print(f"\n[FILES CREATED]")
-    print(f"  - comparison_metrics.csv")
-    print(f"  - model_comparison.png")
-    print(f"  - combined_roc_curves.png")
-    print(f"  - evaluation_summary.txt")
-    print(f"  - unsupervised_lstm_results.csv")
-    print(f"  - supervised_lstm_results.csv")
-    print(f"  - dual_lstm_results.csv  (includes Surprise Factor)")
-    print(f"  - autoencoder_ocsvm_results.csv")
-    print(f"  - Individual model metrics and plots")
-
-    print("\n[BEST MODEL]")
     if 'F1-Score' in comparison_df.columns:
         best_model = comparison_df['F1-Score'].idxmax()
         best_f1 = comparison_df.loc[best_model, 'F1-Score']
-        print(f"  {best_model}: F1-Score = {best_f1:.4f}")
-
-    print("\n" + "="*80)
-    print("THANK YOU FOR USING THE ANOMALY DETECTION PIPELINE!")
-    print("="*80 + "\n")
+        print(f"\n  Best model: {best_model}  (F1={best_f1:.4f})")
 
     return comparison_df, all_results
 
@@ -416,7 +416,6 @@ def main():
 # ============================================================================
 
 def quick_run_statistical():
-    """Quick run: Statistical methods only"""
     df, split_idx = prepare_data()
     stat_results, df_test = run_statistical_baseline(df, split_idx)
     comparison_df = compare_models(stat_results)
@@ -424,156 +423,115 @@ def quick_run_statistical():
 
 
 def quick_run_unsupervised():
-    """Quick run: Unsupervised LSTM only"""
     df, split_idx = prepare_data()
     result, out = run_unsupervised_lstm(df)
-    evaluate_model(
-        result['y_true'], result['y_pred'], result['y_prob'],
-        model_name='Unsupervised LSTM', plot_curves=True
-    )
+    evaluate_model(result['y_true'], result['y_pred'], result['y_prob'],
+                   model_name='Unsupervised LSTM', plot_curves=True)
     return result, out
 
 
 def quick_run_supervised():
-    """Quick run: Supervised LSTM only"""
     df, split_idx = prepare_data()
     result, out = run_supervised_lstm(df)
-    evaluate_model(
-        result['y_true'], result['y_pred'], result['y_prob'],
-        model_name='Supervised LSTM', plot_curves=True
-    )
+    evaluate_model(result['y_true'], result['y_pred'], result['y_prob'],
+                   model_name='Supervised LSTM', plot_curves=True)
     return result, out
 
 
-def quick_run_dual():
-    """Quick run: Dual-Stream LSTM only (statistical labels)"""
-    df, split_idx = prepare_data()
+def quick_run_dual(symbol=None, timeframe=None, limit=None):
+    """Quick run: Dual-Stream LSTM + immediate causal analysis."""
+    df, split_idx = prepare_data(symbol=symbol, timeframe=timeframe, limit=limit)
     result, out = run_dual_lstm(df)
-    evaluate_model(
-        result['y_true'], result['y_pred'], result['y_prob'],
-        model_name='Dual-Stream LSTM', plot_curves=True
-    )
+    evaluate_model(result['y_true'], result['y_pred'], result['y_prob'],
+                   model_name='Dual-Stream LSTM', plot_curves=True)
+
     print("\n[SURPRISE FACTOR SUMMARY]")
     print(out[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
+
+    print("\n[PHASE 2B -- CAUSAL ANALYSIS]")
+    run_causal_analysis_pipeline(
+        dual_results_df=out,
+        config=CONFIG,
+        sf_threshold=CONFIG.get('sf_z_threshold', 1.0),
+        anomaly_col="Anomaly_Pred"
+    )
     return result, out
 
 
 def quick_run_dual_gt():
     """
-    Quick run: Dual-Stream LSTM with real-world ground truth labels.
-    Saves dual_lstm_gt_results.csv -- only needs to run once.
-    After that, run_causal_analysis() loads the saved file directly.
+    Dual-Stream LSTM trained on ground truth labels.
+    For BTC only -- uses the hardcoded event list in ground_truth.py.
+    After running once, dual_lstm_gt_results.csv is saved.
     """
     df, split_idx = prepare_data()
-
     df, event_report = create_ground_truth_labels(df, window_days=1)
 
     eval_result, results_df = run_dual_lstm_pipeline(
         df, CONFIG, label_col="Anomaly_GroundTruth"
     )
-
     results_df.to_csv(f"{CONFIG['output_dir']}/dual_lstm_gt_results.csv")
     print(f"  Ground truth results saved -> {CONFIG['output_dir']}/dual_lstm_gt_results.csv")
 
     evaluate_model(
-        eval_result['y_true'],
-        eval_result['y_pred'],
-        eval_result['y_prob'],
+        eval_result['y_true'], eval_result['y_pred'], eval_result['y_prob'],
         model_name='Dual-Stream LSTM (Ground Truth)',
-        plot_curves=True,
-        save_dir=CONFIG['output_dir']
+        plot_curves=True, save_dir=CONFIG['output_dir']
     )
 
     print("\n[SURPRISE FACTOR SUMMARY -- GROUND TRUTH RUN]")
     print(results_df[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
 
+    print("\n[PHASE 2B -- CAUSAL ANALYSIS]")
+    run_causal_analysis_pipeline(
+        dual_results_df=results_df,
+        config=CONFIG,
+        sf_threshold=CONFIG.get('sf_z_threshold', 1.0),
+        anomaly_col="Anomaly_Pred"
+    )
+
     return eval_result, results_df, event_report
 
 
 def quick_run_autoencoder():
-    """Quick run: Autoencoder + OCSVM only"""
     df, split_idx = prepare_data()
     result, results_df = run_autoencoder_hybrid(df)
-    evaluate_model(
-        result['y_true'], result['y_pred'], result['y_prob'],
-        model_name='Autoencoder + OCSVM', plot_curves=True
-    )
+    evaluate_model(result['y_true'], result['y_pred'], result['y_prob'],
+                   model_name='Autoencoder + OCSVM', plot_curves=True)
     return result, results_df
 
 
-# ============================================================================
-# PHASE 2B: CAUSAL ANALYSIS (no external API needed)
-# ============================================================================
-
 def run_causal_analysis():
     """
-    Phase 2B: Causal Analysis -- NLP sentiment scoring + causal verdict engine.
-
-    No external API needed. Uses hardcoded sentiment scores for the 41
-    known BTC events and ground truth labels across the full dataset.
-
-    Why full dataset instead of test split:
-      The LSTM 90/10 split puts the test window in late 2025 to 2026,
-      but all 41 known events end in April 2025. Using only the test split
-      gives 0% detection. Instead we use all 970 days so all events are
-      visible to the causal engine.
-
-    Run quick_run_dual_gt() at least once first to generate
-    dual_lstm_gt_results.csv and get real Surprise Factor values.
-    After that this function loads the CSV and runs in seconds.
+    Run Phase 2B causal analysis on saved dual-LSTM results.
+    Loads dual_lstm_results.csv (or gt version if available).
+    Runs in seconds -- no retraining needed.
     """
     print("\n" + "="*80)
-    print("PHASE 2B: CAUSAL ANALYSIS (NLP + Rule Engine)")
+    print("PHASE 2B: CAUSAL ANALYSIS (Surprise Factor method)")
     print("="*80)
 
-    # Step 1: full preprocessed dataframe with ground truth labels
-    print("\n[1/3] Preparing full dataset with ground truth labels...")
-    df_full, split_idx = prepare_data()
-    df_full, _ = create_ground_truth_labels(df_full, window_days=1, verbose=False)
+    gt_csv  = f"{CONFIG['output_dir']}/dual_lstm_gt_results.csv"
+    std_csv = f"{CONFIG['output_dir']}/dual_lstm_results.csv"
 
-    # Step 2: build full-range results frame using GT labels as anomaly signal
-    full_df = pd.DataFrame(index=pd.to_datetime(df_full.index))
-    full_df["Anomaly_True"]      = df_full["Anomaly_GroundTruth"].values
-    full_df["Anomaly_Pred"]      = df_full["Anomaly_GroundTruth"].values
-    full_df["Anomaly_Prob"]      = df_full["Anomaly_GroundTruth"].astype(float).values
-    full_df["Close_True"]        = df_full["Close"].values
-    full_df["Close_Pred"]        = df_full["Close"].values
-    full_df["Surprise_Factor"]   = 0.0
-    full_df["Surprise_Factor_Z"] = 0.0
-
-    # Step 3: overlay real Surprise Factor from saved LSTM test results
-    gt_csv = f"{CONFIG['output_dir']}/dual_lstm_gt_results.csv"
     if os.path.exists(gt_csv):
-        print(f"\n[2/3] Loading Surprise Factor from {gt_csv}...")
-        lstm_test = pd.read_csv(gt_csv, index_col=0, parse_dates=True)
-        for col in ["Surprise_Factor", "Surprise_Factor_Z", "Anomaly_Prob", "Anomaly_Pred"]:
-            if col in lstm_test.columns:
-                overlap = full_df.index.intersection(lstm_test.index)
-                full_df.loc[overlap, col] = lstm_test.loc[overlap, col].values
-        print(f"  Overlaid {len(lstm_test)} test-period rows with real Surprise Factor values")
+        csv_path = gt_csv
+    elif os.path.exists(std_csv):
+        csv_path = std_csv
     else:
-        print("\n[2/3] No dual_lstm_gt_results.csv found.")
-        print("  Surprise Factor will be 0 for all days.")
-        print("  Run quick_run_dual_gt() once to generate real Surprise Factor values.")
+        print("  [!] No saved dual-LSTM results found.")
+        print("  Run quick_run_dual() or quick_run_dual_gt() first.")
+        return None
 
-    print(f"\n[3/3] Running causal analysis pipeline...")
-    print(f"  Full dataset: {len(full_df)} days, "
-          f"{int(full_df['Anomaly_True'].sum())} ground truth anomaly days")
+    print(f"  Loading: {csv_path}")
+    dual_results_df = pd.read_csv(csv_path, index_col=0, parse_dates=True)
 
-    causal_results = run_causal_analysis_pipeline(
-        dual_results_df=full_df,
-        known_events=KNOWN_BTC_EVENTS,
+    return run_causal_analysis_pipeline(
+        dual_results_df=dual_results_df,
         config=CONFIG,
-        proximity_days=3,
-        use_cryptobert=False,   # hardcoded scores -- set True to run CryptoBERT model
-        anomaly_col="Anomaly_True",
+        sf_threshold=CONFIG.get('sf_z_threshold', 1.0),
+        anomaly_col="Anomaly_Pred"
     )
-    return causal_results
-
-
-def quick_run_cryptobert():
-    """Alias for run_causal_analysis (Phase 2B revised -- no API needed)"""
-    return run_causal_analysis()
 
 
 # ============================================================================
@@ -582,16 +540,21 @@ def quick_run_cryptobert():
 
 if __name__ == "__main__":
 
-    # Option 1: Run full pipeline (all models)
+    # Interactive asset selection -- use arrow keys to pick asset/timeframe/history
+    symbol, timeframe, limit = select_asset()
+
+    # Option 1: Full pipeline (all models + causal analysis)
     # comparison_df, all_results = main()
 
-    # Option 2: Quick run specific model (uncomment to use)
+    # Option 2: Quick run specific model (all respect the selected asset)
     # comparison_df = quick_run_statistical()
     # result, out = quick_run_unsupervised()
     # result, out = quick_run_supervised()
-    # result, out = quick_run_dual()                  # statistical labels
-    # result, out, report = quick_run_dual_gt()       # run once to save dual_lstm_gt_results.csv
+    # result, out, report = quick_run_dual_gt()   # BTC only, uses ground truth labels
     # result, results_df = quick_run_autoencoder()
 
-    # Phase 2B: Causal analysis (runs in seconds after quick_run_dual_gt() has been run once)
-    causal_results = run_causal_analysis()
+    # Option 3: Causal analysis only (loads saved results, runs in seconds)
+    # causal_results = run_causal_analysis()
+
+    # Default: dual-LSTM + causal analysis on selected asset
+    result, out = quick_run_dual(symbol=symbol, timeframe=timeframe, limit=limit)

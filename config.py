@@ -1,4 +1,20 @@
 CONFIG = {
+    # ----------------------------------------------------------------
+    # ASSET CONFIGURATION
+    # Change symbol to run the full pipeline on any Binance asset.
+    # Examples:
+    #   Crypto  : 'BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT'
+    #   Stables : 'ETH/BTC' (ETH priced in BTC)
+    # timeframe: '1d' (daily), '4h' (4-hour), '1h' (hourly)
+    # limit    : number of candles to fetch (max ~1000 on Binance free)
+    # ----------------------------------------------------------------
+    'symbol':    'BTC/USDT',
+    'timeframe': '1d',
+    'limit':     1000,
+
+    # ----------------------------------------------------------------
+    # MODEL HYPERPARAMETERS
+    # ----------------------------------------------------------------
     'train_ratio': 0.9,
     'lookback': 100,
     'time_steps_ae': 7,
@@ -7,7 +23,7 @@ CONFIG = {
     'ewma_k': 2.0,
     'lstm_epochs': 100,
     'lstm_batch_size': 16,
-    'unsup_k': 0.90,  # Quantile-based (top %10)
+    'unsup_k': 0.90,
     'sup_threshold': 0.3,
     'ae_epochs': 100,
     'ae_batch_size': 32,
@@ -15,12 +31,17 @@ CONFIG = {
     'ocsvm_nu': 0.005,
     'output_dir': 'results',
 
-    # --- Phase 2A: Dual-Stream LSTM ---
-    'dual_epochs': 100,          # max training epochs
-    'dual_batch_size': 16,       # batch size
-    'dual_threshold': 0.3,       # anomaly classification threshold
+    # ----------------------------------------------------------------
+    # PHASE 2A: DUAL-STREAM LSTM
+    # ----------------------------------------------------------------
+    'dual_epochs': 100,
+    'dual_batch_size': 16,
+    'dual_threshold': 0.2,
 
-    # --- Phase 2B: CryptoBERT Sentiment (GDELT — free, no API key) ---
-    'news_sleep_sec': 0.5,
-    'cryptobert_batch_size': 32,   # article titles per CryptoBERT inference batch
+    # ----------------------------------------------------------------
+    # PHASE 2B: CAUSAL ANALYSIS (Surprise Factor method)
+    # sf_z_threshold: SF Z-score cutoff for external_shock verdict.
+    #   Raise to be stricter (fewer externals), lower for more.
+    # ----------------------------------------------------------------
+    'sf_z_threshold': 1.0,
 }

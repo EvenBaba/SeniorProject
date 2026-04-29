@@ -1,92 +1,10 @@
-date,verdict,Anomaly_Prob,Surprise_Factor,Surprise_Factor_Z,Close_True,days_to_event,nearest_event_date,nearest_event_type,nearest_event_label,nearest_event_desc
-2023-08-16,news_driven,1.0,0.0,0.0,28730.51,1,2023-08-17,crash,bearish,BTC flash crash -10% from ~$29k to ~$26k on liquidation cascade
-2023-08-17,news_driven,1.0,0.0,0.0,26623.41,0,2023-08-17,crash,bearish,BTC flash crash -10% from ~$29k to ~$26k on liquidation cascade
-2023-08-18,news_driven,1.0,0.0,0.0,26054.0,1,2023-08-17,crash,bearish,BTC flash crash -10% from ~$29k to ~$26k on liquidation cascade
-2023-08-28,news_driven,1.0,0.0,0.0,26120.0,1,2023-08-29,pump,bullish,US court rules SEC was wrong to reject Grayscale Bitcoin ETF — legal win for crypto
-2023-08-29,news_driven,1.0,0.0,0.0,27716.34,0,2023-08-29,pump,bullish,US court rules SEC was wrong to reject Grayscale Bitcoin ETF — legal win for crypto
-2023-08-30,news_driven,1.0,0.0,0.0,27299.99,1,2023-08-29,pump,bullish,US court rules SEC was wrong to reject Grayscale Bitcoin ETF — legal win for crypto
-2023-10-15,news_driven,1.0,0.0,0.0,27154.15,1,2023-10-16,volatile,neutral,False report of iShares Bitcoin ETF approval causes brief +10% pump then reversal
-2023-10-16,news_driven,1.0,0.0,0.0,28500.78,0,2023-10-16,volatile,neutral,False report of iShares Bitcoin ETF approval causes brief +10% pump then reversal
-2023-10-17,news_driven,1.0,0.0,0.0,28395.91,1,2023-10-16,volatile,neutral,False report of iShares Bitcoin ETF approval causes brief +10% pump then reversal
-2023-10-22,news_driven,1.0,0.0,0.0,29992.46,1,2023-10-23,pump,bullish,BlackRock Bitcoin ETF ticker appears on DTCC website — renewed ETF speculation pump
-2023-10-23,news_driven,1.0,0.0,0.0,33069.99,0,2023-10-23,pump,bullish,BlackRock Bitcoin ETF ticker appears on DTCC website — renewed ETF speculation pump
-2023-10-24,news_driven,1.0,0.0,0.0,33922.73,1,2023-10-23,pump,bullish,BlackRock Bitcoin ETF ticker appears on DTCC website — renewed ETF speculation pump
-2023-12-04,news_driven,1.0,0.0,0.0,41991.1,1,2023-12-05,pump,bullish,BTC breaks $44k for first time since April 2022 on ETF optimism
-2023-12-05,news_driven,1.0,0.0,0.0,44073.32,0,2023-12-05,pump,bullish,BTC breaks $44k for first time since April 2022 on ETF optimism
-2023-12-06,news_driven,1.0,0.0,0.0,43762.69,1,2023-12-05,pump,bullish,BTC breaks $44k for first time since April 2022 on ETF optimism
-2024-01-09,news_driven,1.0,0.0,0.0,46110.0,1,2024-01-10,pump,bullish,"SEC approves Bitcoin Spot ETFs from BlackRock, Fidelity and others"
-2024-01-10,news_driven,1.0,0.0,0.0,46653.99,0,2024-01-10,pump,bullish,"SEC approves Bitcoin Spot ETFs from BlackRock, Fidelity and others"
-2024-01-11,news_driven,1.0,0.0,0.0,46339.16,0,2024-01-11,volatile,neutral,"First trading day of Bitcoin Spot ETFs — record volume, high volatility"
-2024-01-12,news_driven,1.0,0.0,0.0,42782.73,1,2024-01-11,volatile,neutral,"First trading day of Bitcoin Spot ETFs — record volume, high volatility"
-2024-02-27,news_driven,1.0,0.0,0.0,57037.34,1,2024-02-28,pump,bullish,BTC reclaims $60k for first time since November 2021 bull run peak
-2024-02-28,news_driven,1.0,0.0,0.0,62432.1,0,2024-02-28,pump,bullish,BTC reclaims $60k for first time since November 2021 bull run peak
-2024-02-29,news_driven,1.0,0.0,0.0,61130.98,1,2024-02-28,pump,bullish,BTC reclaims $60k for first time since November 2021 bull run peak
-2024-03-04,news_driven,1.0,0.0,0.0,68245.71,1,2024-03-05,pump,bullish,BTC breaks its 2021 all-time high of ~$69k setting a new ATH
-2024-03-05,news_driven,1.0,0.0,0.0,63724.01,0,2024-03-05,pump,bullish,BTC breaks its 2021 all-time high of ~$69k setting a new ATH
-2024-03-06,news_driven,1.0,0.0,0.0,66074.04,1,2024-03-05,pump,bullish,BTC breaks its 2021 all-time high of ~$69k setting a new ATH
-2024-03-13,news_driven,1.0,0.0,0.0,73072.41,1,2024-03-14,pump,bullish,"BTC reaches new all-time high of approximately $73,750"
-2024-03-14,news_driven,1.0,0.0,0.0,71388.94,0,2024-03-14,pump,bullish,"BTC reaches new all-time high of approximately $73,750"
-2024-03-15,news_driven,1.0,0.0,0.0,69499.85,1,2024-03-14,pump,bullish,"BTC reaches new all-time high of approximately $73,750"
-2024-04-18,news_driven,1.0,0.0,0.0,63470.08,1,2024-04-19,volatile,neutral,Pre-halving volatility — BTC drops sharply to around $60k
-2024-04-19,news_driven,1.0,0.0,0.0,63818.01,0,2024-04-19,volatile,neutral,Pre-halving volatility — BTC drops sharply to around $60k
-2024-04-20,news_driven,1.0,0.0,0.0,64940.59,0,2024-04-20,volatile,neutral,Bitcoin fourth halving — block reward cut from 6.25 to 3.125 BTC
-2024-04-21,news_driven,1.0,0.0,0.0,64941.15,1,2024-04-20,volatile,neutral,Bitcoin fourth halving — block reward cut from 6.25 to 3.125 BTC
-2024-05-22,news_driven,1.0,0.0,0.0,69166.62,1,2024-05-23,pump,bullish,SEC approves Ethereum spot ETF applications — bullish signal for crypto broadly
-2024-05-23,news_driven,1.0,0.0,0.0,67969.65,0,2024-05-23,pump,bullish,SEC approves Ethereum spot ETF applications — bullish signal for crypto broadly
-2024-05-24,news_driven,1.0,0.0,0.0,68549.99,1,2024-05-23,pump,bullish,SEC approves Ethereum spot ETF applications — bullish signal for crypto broadly
-2024-06-06,news_driven,1.0,0.0,0.0,70799.06,1,2024-06-07,crash,bearish,BTC drops approximately 10% on stronger than expected US jobs data macro sell-off
-2024-06-07,news_driven,1.0,0.0,0.0,69355.6,0,2024-06-07,crash,bearish,BTC drops approximately 10% on stronger than expected US jobs data macro sell-off
-2024-06-08,news_driven,1.0,0.0,0.0,69310.46,1,2024-06-07,crash,bearish,BTC drops approximately 10% on stronger than expected US jobs data macro sell-off
-2024-07-04,news_driven,1.0,0.0,0.0,57050.01,1,2024-07-05,crash,bearish,German government begins selling confiscated BTC holdings — $3B supply overhang
-2024-07-05,news_driven,1.0,0.0,0.0,56628.79,0,2024-07-05,crash,bearish,German government begins selling confiscated BTC holdings — $3B supply overhang
-2024-07-06,news_driven,1.0,0.0,0.0,58230.13,1,2024-07-05,crash,bearish,German government begins selling confiscated BTC holdings — $3B supply overhang
-2024-07-15,news_driven,1.0,0.0,0.0,64724.14,1,2024-07-16,pump,bullish,"German government completes BTC sales — selling pressure lifts, price rebounds"
-2024-07-16,news_driven,1.0,0.0,0.0,65043.99,0,2024-07-16,pump,bullish,"German government completes BTC sales — selling pressure lifts, price rebounds"
-2024-07-17,news_driven,1.0,0.0,0.0,64087.99,1,2024-07-16,pump,bullish,"German government completes BTC sales — selling pressure lifts, price rebounds"
-2024-08-04,news_driven,1.0,0.0,0.0,58161.0,1,2024-08-05,crash,bearish,"Global market crash driven by Japan carry trade unwind, BTC drops approximately 15%"
-2024-08-05,news_driven,1.0,0.0,0.0,54018.81,0,2024-08-05,crash,bearish,"Global market crash driven by Japan carry trade unwind, BTC drops approximately 15%"
-2024-08-06,news_driven,1.0,0.0,0.0,56022.01,0,2024-08-06,crash,bearish,Continued sell-off from Japan carry trade unwind across all risk assets
-2024-08-07,news_driven,1.0,0.0,0.0,55134.16,1,2024-08-06,crash,bearish,Continued sell-off from Japan carry trade unwind across all risk assets
-2024-09-17,news_driven,1.0,0.0,0.0,60313.99,1,2024-09-18,pump,bullish,US Federal Reserve cuts interest rates 50 basis points — risk assets including BTC pump
-2024-09-18,news_driven,1.0,0.0,0.0,61759.99,0,2024-09-18,pump,bullish,US Federal Reserve cuts interest rates 50 basis points — risk assets including BTC pump
-2024-09-19,news_driven,1.0,0.0,0.0,62947.99,1,2024-09-18,pump,bullish,US Federal Reserve cuts interest rates 50 basis points — risk assets including BTC pump
-2024-10-13,news_driven,1.0,0.0,0.0,62870.02,1,2024-10-14,pump,bullish,BTC breaks $65k resistance — momentum building ahead of US election
-2024-10-14,news_driven,1.0,0.0,0.0,66083.99,0,2024-10-14,pump,bullish,BTC breaks $65k resistance — momentum building ahead of US election
-2024-10-15,news_driven,1.0,0.0,0.0,67074.14,1,2024-10-14,pump,bullish,BTC breaks $65k resistance — momentum building ahead of US election
-2024-11-04,news_driven,1.0,0.0,0.0,67850.01,1,2024-11-05,pump,bullish,"US Election Day — Trump wins presidency, BTC begins historic post-election rally"
-2024-11-05,news_driven,1.0,0.0,0.0,69372.01,0,2024-11-05,pump,bullish,"US Election Day — Trump wins presidency, BTC begins historic post-election rally"
-2024-11-06,news_driven,1.0,0.0,0.0,75571.99,0,2024-11-06,pump,bullish,BTC surges past $75k driven by Trump election victory and pro-crypto policy expectations
-2024-11-07,news_driven,1.0,0.0,0.0,75857.89,1,2024-11-06,pump,bullish,BTC surges past $75k driven by Trump election victory and pro-crypto policy expectations
-2024-11-12,news_driven,1.0,0.0,0.0,87952.01,1,2024-11-13,pump,bullish,BTC crosses $90k for the first time in history
-2024-11-13,news_driven,1.0,0.0,0.0,90375.2,0,2024-11-13,pump,bullish,BTC crosses $90k for the first time in history
-2024-11-14,news_driven,1.0,0.0,0.0,87325.59,1,2024-11-13,pump,bullish,BTC crosses $90k for the first time in history
-2024-12-04,news_driven,1.0,0.0,0.0,98587.32,1,2024-12-05,pump,bullish,BTC crosses $100k for the first time ever — historic milestone
-2024-12-05,news_driven,1.0,0.0,0.0,96945.63,0,2024-12-05,pump,bullish,BTC crosses $100k for the first time ever — historic milestone
-2024-12-06,news_driven,1.0,0.0,0.0,99740.84,1,2024-12-05,pump,bullish,BTC crosses $100k for the first time ever — historic milestone
-2024-12-16,news_driven,1.0,0.0,0.0,106058.66,1,2024-12-17,pump,bullish,"BTC reaches all-time high of approximately $108,000"
-2024-12-17,news_driven,1.0,0.0,0.0,106133.74,0,2024-12-17,pump,bullish,"BTC reaches all-time high of approximately $108,000"
-2024-12-18,news_driven,1.0,0.0,0.0,100204.01,0,2024-12-18,crash,bearish,Fed signals fewer rate cuts in 2025 — BTC flash crashes from ~$108k
-2024-12-19,news_driven,1.0,0.0,0.0,97461.86,1,2024-12-18,crash,bearish,Fed signals fewer rate cuts in 2025 — BTC flash crashes from ~$108k
-2025-01-19,news_driven,1.0,0.0,0.0,101331.57,1,2025-01-20,volatile,neutral,Trump inauguration — BTC volatile with initial pump then sharp correction
-2025-01-20,news_driven,1.0,0.0,0.0,102260.01,0,2025-01-20,volatile,neutral,Trump inauguration — BTC volatile with initial pump then sharp correction
-2025-01-21,news_driven,1.0,0.0,0.0,106143.82,1,2025-01-20,volatile,neutral,Trump inauguration — BTC volatile with initial pump then sharp correction
-2025-01-22,news_driven,1.0,0.0,0.0,103706.66,1,2025-01-23,pump,bullish,Trump signs executive order creating Presidential Working Group on digital assets
-2025-01-23,news_driven,1.0,0.0,0.0,103910.34,0,2025-01-23,pump,bullish,Trump signs executive order creating Presidential Working Group on digital assets
-2025-01-24,news_driven,1.0,0.0,0.0,104870.5,1,2025-01-23,pump,bullish,Trump signs executive order creating Presidential Working Group on digital assets
-2025-02-02,news_driven,1.0,0.0,0.0,97700.59,1,2025-02-03,crash,bearish,BTC flash crash from ~$90k to ~$78k on tariff war escalation fears
-2025-02-03,news_driven,1.0,0.0,0.0,101328.52,0,2025-02-03,crash,bearish,BTC flash crash from ~$90k to ~$78k on tariff war escalation fears
-2025-02-04,news_driven,1.0,0.0,0.0,97763.13,1,2025-02-03,crash,bearish,BTC flash crash from ~$90k to ~$78k on tariff war escalation fears
-2025-02-24,news_driven,1.0,0.0,0.0,91552.88,1,2025-02-25,crash,bearish,BTC drops sharply below $90k amid broader risk-off sentiment and macro uncertainty
-2025-02-25,news_driven,1.0,0.0,0.0,88680.4,0,2025-02-25,crash,bearish,BTC drops sharply below $90k amid broader risk-off sentiment and macro uncertainty
-2025-02-26,news_driven,1.0,0.0,0.0,84250.09,1,2025-02-25,crash,bearish,BTC drops sharply below $90k amid broader risk-off sentiment and macro uncertainty
-2025-03-03,news_driven,1.0,0.0,0.0,86220.61,1,2025-03-04,pump,bullish,Trump announces US Strategic Bitcoin Reserve — executive order signed
-2025-03-04,news_driven,1.0,0.0,0.0,87281.98,0,2025-03-04,pump,bullish,Trump announces US Strategic Bitcoin Reserve — executive order signed
-2025-03-05,news_driven,1.0,0.0,0.0,90606.01,1,2025-03-04,pump,bullish,Trump announces US Strategic Bitcoin Reserve — executive order signed
-2025-03-10,news_driven,1.0,0.0,0.0,78595.86,1,2025-03-11,crash,bearish,BTC drops below $80k as Strategic Reserve disappointment sets in — smaller than expected
-2025-03-11,news_driven,1.0,0.0,0.0,82932.99,0,2025-03-11,crash,bearish,BTC drops below $80k as Strategic Reserve disappointment sets in — smaller than expected
-2025-03-12,news_driven,1.0,0.0,0.0,83680.12,1,2025-03-11,crash,bearish,BTC drops below $80k as Strategic Reserve disappointment sets in — smaller than expected
-2025-04-06,news_driven,1.0,0.0,0.0,78430.0,1,2025-04-07,crash,bearish,BTC crashes below $75k on global tariff war fears — Black Monday style selloff
-2025-04-07,news_driven,1.0,0.0,0.0,79163.24,0,2025-04-07,crash,bearish,BTC crashes below $75k on global tariff war fears — Black Monday style selloff
-2025-04-08,news_driven,1.0,0.0,0.0,76322.42,1,2025-04-07,crash,bearish,BTC crashes below $75k on global tariff war fears — Black Monday style selloff
-2025-04-09,news_driven,1.0,0.0,0.0,82615.22,0,2025-04-09,pump,bullish,"Trump pauses tariffs for 90 days — markets surge, BTC rebounds sharply"
-2025-04-10,news_driven,1.0,0.0,0.0,79607.3,1,2025-04-09,pump,bullish,"Trump pauses tariffs for 90 days — markets surge, BTC rebounds sharply"
+,verdict,Anomaly_Prob,Surprise_Factor,Surprise_Factor_Z,Close_True,externality_score
+2026-02-02,internal_mechanics,0.35915285,13.137932,-0.1759492,78738.61,0.0
+2026-02-03,internal_mechanics,0.39341405,18.582985,0.35813618,75770.21,0.21135114
+2026-02-04,internal_mechanics,0.48376963,19.68006,0.4657442,73165.83,0.25393438
+2026-02-05,external_shock,0.52837586,38.900997,2.3510559,62909.86,1.0
+2026-02-06,internal_mechanics,0.5606394,19.686787,0.46640405,70580.26,0.25419548
+2026-02-07,external_shock,0.4850577,26.506428,1.1353177,69289.38,0.5189016
+2026-02-08,internal_mechanics,0.40592602,23.250198,0.8159261,70330.38,0.39251024
+2026-02-09,internal_mechanics,0.27647224,23.181353,0.8091733,70138.0,0.38983798
+2026-02-10,external_shock,0.2071514,25.37029,1.0238782,68841.29,0.47480217
