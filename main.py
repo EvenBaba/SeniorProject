@@ -35,7 +35,6 @@ from lstm_AE import (
 )
  
 from lstm_dual import run_dual_lstm_pipeline
-from ground_truth import create_ground_truth_labels
 from causal_analysis import run_causal_analysis_pipeline
  
 from evaluation import (
@@ -451,41 +450,6 @@ def quick_run_dual(symbol=None, timeframe=None, limit=None):
     return result, out
  
  
-def quick_run_dual_gt():
-    """
-    Dual-Stream LSTM trained on ground truth labels.
-    For BTC only -- uses the hardcoded event list in ground_truth.py.
-    After running once, dual_lstm_gt_results.csv is saved.
-    """
-    df, split_idx = prepare_data()
-    df, event_report = create_ground_truth_labels(df, window_days=1)
- 
-    eval_result, results_df = run_dual_lstm_pipeline(
-        df, CONFIG, label_col="Anomaly_GroundTruth"
-    )
-    results_df.to_csv(f"{CONFIG['output_dir']}/dual_lstm_gt_results.csv")
-    print(f"  Ground truth results saved -> {CONFIG['output_dir']}/dual_lstm_gt_results.csv")
- 
-    evaluate_model(
-        eval_result['y_true'], eval_result['y_pred'], eval_result['y_prob'],
-        model_name='Dual-Stream LSTM (Ground Truth)',
-        plot_curves=True, save_dir=CONFIG['output_dir']
-    )
- 
-    print("\n[SURPRISE FACTOR SUMMARY -- GROUND TRUTH RUN]")
-    print(results_df[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
- 
-    print("\n[PHASE 2B -- CAUSAL ANALYSIS]")
-    run_causal_analysis_pipeline(
-        dual_results_df=results_df,
-        config=CONFIG,
-        sf_threshold=CONFIG.get('sf_z_threshold', 1.0),
-        anomaly_col="Anomaly_Pred"
-    )
- 
-    return eval_result, results_df, event_report
- 
- 
 def quick_run_autoencoder():
     df, split_idx = prepare_data()
     result, results_df = run_autoencoder_hybrid(df)
@@ -514,7 +478,7 @@ def run_causal_analysis():
         csv_path = std_csv
     else:
         print("  [!] No saved dual-LSTM results found.")
-        print("  Run quick_run_dual() or quick_run_dual_gt() first.")
+        print("  Run quick_run_dual() first.")
         return None
  
     print(f"  Loading: {csv_path}")
@@ -554,7 +518,6 @@ if __name__ == "__main__":
     # result, results_df = quick_run_autoencoder()
     # Trains and tests the LSTM Autoencoder + OCSVM only. Same outputs.
 
-    # result, out, report = quick_run_dual_gt()   # BTC only, uses ground truth labels
 
 
     # Option 3: Causal analysis only (loads saved results, runs in seconds)
