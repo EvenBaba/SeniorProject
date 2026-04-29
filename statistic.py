@@ -44,6 +44,90 @@ def fetch_cryptocurrency_data(symbol='BTC/USDT', timeframe='1d', limit=1000):
     return df if ohlcv else None
 
 
+def fetch_financial_data(symbol='AAPL', timeframe='1d', limit=1000):
+    """
+    Fetch OHLCV data for stocks, forex, indices, and commodities via yfinance.
+
+    Parameters
+    ----------
+    symbol    : Yahoo Finance ticker, e.g. 'AAPL', 'EURUSD=X', 'GC=F', '^GSPC'
+    timeframe : interval string -- '1d', '1wk', '1h'
+    limit     : number of candles to fetch (approximate)
+
+    Supported asset classes:
+      Stocks      : AAPL, NVDA, TSLA, MSFT, AMZN, META
+      ETFs        : SPY, QQQ
+      Indices     : ^GSPC (S&P 500), ^IXIC (Nasdaq), ^DJI (Dow Jones)
+      Forex       : EURUSD=X, GBPUSD=X, JPY=X, TRY=X
+      Commodities : GC=F (Gold), SI=F (Silver), CL=F (Oil), NG=F (Gas)
+    """
+    try:
+        import yfinance as yf
+    except ImportError:
+        print("[!] yfinance not installed. Run: pip install yfinance")
+        return None
+
+    # Map limit (number of candles) to a period yfinance understands
+    if timeframe == '1d':
+        period = f"{min(limit, 9999)}d"
+    elif timeframe == '1wk':
+        period = f"{min(limit * 7, 9999)}d"
+    elif timeframe == '1h':
+        # yfinance only supports hourly data for last 730 days
+        period = "730d"
+    else:
+        period = f"{limit}d"
+
+    print(f"Fetching {symbol} ({timeframe}, ~{limit} candles) via yfinance...")
+
+    try:
+        ticker = yf.Ticker(symbol)
+        df = ticker.history(period=period, interval=timeframe, auto_adjust=True)
+    except Exception as e:
+        print(f"yfinance fetch error: {e}")
+        return None
+
+    if df is None or df.empty:
+        print(f"[!] No data returned for {symbol}. Check the ticker symbol.")
+        return None
+
+    # Keep only OHLCV columns and standardize
+    df = df[['Open', 'High', 'Low', 'Close', 'Volume']].copy()
+
+    # Remove timezone info from index to match ccxt format
+    df.index = pd.to_datetime(df.index).tz_localize(None)
+    df.index.name = 'Timestamp'
+
+    # Trim to requested limit
+    if len(df) > limit:
+        df = df.iloc[-limit:]
+
+    print(f"--- Pandas DataFrame for {symbol} ---")
+    print(df)
+    print("---------------------------------------------------")
+
+    return df
+
+
+def fetch_data(symbol, timeframe='1d', limit=1000, market_type='crypto'):
+    """
+    Unified data fetcher. Routes to ccxt or yfinance based on market_type.
+
+    Parameters
+    ----------
+    symbol      : asset symbol (Binance pair for crypto, Yahoo ticker for finance)
+    timeframe   : candle interval
+    limit       : number of candles
+    market_type : 'crypto' -> ccxt/Binance, 'finance' -> yfinance
+    """
+    if market_type == 'finance':
+        return fetch_financial_data(symbol=symbol, timeframe=timeframe, limit=limit)
+    else:
+        return fetch_cryptocurrency_data(symbol=symbol, timeframe=timeframe, limit=limit)
+
+
+
+
 def data_preprocessing_and_feature_engineering(
     df, 
     train_ratio=0.9,

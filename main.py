@@ -11,7 +11,7 @@ import numpy as np
 import os
  
 from statistic import (
-    fetch_cryptocurrency_data,
+    fetch_data,
     data_preprocessing_and_feature_engineering
 )
  
@@ -54,7 +54,7 @@ os.makedirs(CONFIG['output_dir'], exist_ok=True)
 # DATA PREPARATION
 # ============================================================================
  
-def prepare_data(symbol=None, timeframe=None, limit=None):
+def prepare_data(symbol=None, timeframe=None, limit=None, market_type=None):
     """
     Fetch and preprocess data.
     If symbol/timeframe/limit are not provided, reads from CONFIG.
@@ -65,21 +65,29 @@ def prepare_data(symbol=None, timeframe=None, limit=None):
     limit     = limit     or CONFIG['limit']
  
     # Update CONFIG so downstream modules see the selected asset
-    CONFIG['symbol']    = symbol
-    CONFIG['timeframe'] = timeframe
-    CONFIG['limit']     = limit
+    CONFIG['symbol']      = symbol
+    CONFIG['timeframe']   = timeframe
+    CONFIG['limit']       = limit
+    CONFIG['market_type'] = market_type or 'crypto'
+
+    # Use asset-specific output folder so runs never overwrite each other
+    asset_folder = symbol.replace('/', '_').replace('^', '')
+    CONFIG['output_dir'] = f"results/{CONFIG['market_type']}_{asset_folder}"
+    os.makedirs(CONFIG['output_dir'], exist_ok=True)
  
     print("\n" + "="*80)
     print("DATA PREPARATION")
     print("="*80)
+    print(f"  Market   : {CONFIG['market_type'].upper()}")
     print(f"  Asset    : {symbol}")
     print(f"  Timeframe: {timeframe}")
  
     print("\n[1/2] Fetching data...")
-    df_raw = fetch_cryptocurrency_data(
+    df_raw = fetch_data(
         symbol=symbol,
         timeframe=timeframe,
-        limit=limit
+        limit=limit,
+        market_type=market_type
     )
  
     if df_raw is None:
@@ -234,7 +242,17 @@ def run_dual_lstm(df):
     print("\n" + "="*80)
     print("MODEL 3: DUAL-STREAM LSTM  (Classifier + Price Regressor)")
     print("="*80)
- 
+
+    # Use finance-specific threshold for low-volatility assets (stocks, forex)
+    # Finance assets move 1-8% on anomaly days vs 10-40% for crypto,
+    # so a lower threshold is needed to detect anomalies
+    if CONFIG.get('market_type') == 'finance':
+        CONFIG['dual_threshold'] = CONFIG.get('finance_dual_threshold', 0.1)
+        print(f"  Using finance threshold: {CONFIG['dual_threshold']} (lower for low-volatility assets)")
+    else:
+        CONFIG['dual_threshold'] = CONFIG.get('crypto_dual_threshold', 0.2)
+        print(f"  Using crypto threshold : {CONFIG['dual_threshold']}")
+
     eval_result, results_df = run_dual_lstm_pipeline(df, CONFIG)
     results_df.to_csv(f"{CONFIG['output_dir']}/dual_lstm_results.csv")
     print(f"  Dual LSTM results saved -> {CONFIG['output_dir']}/dual_lstm_results.csv")
@@ -429,9 +447,9 @@ def quick_run_supervised():
     return result, out
  
  
-def quick_run_dual(symbol=None, timeframe=None, limit=None):
+def quick_run_dual(symbol=None, timeframe=None, limit=None, market_type=None):
     """Quick run: Dual-Stream LSTM + immediate causal analysis."""
-    df, split_idx = prepare_data(symbol=symbol, timeframe=timeframe, limit=limit)
+    df, split_idx = prepare_data(symbol=symbol, timeframe=timeframe, limit=limit, market_type=market_type)
     result, out = run_dual_lstm(df)
     evaluate_model(result['y_true'], result['y_pred'], result['y_prob'],
                    model_name='Dual-Stream LSTM', plot_curves=True,
@@ -441,6 +459,10 @@ def quick_run_dual(symbol=None, timeframe=None, limit=None):
     print(out[['Close_True', 'Close_Pred', 'Surprise_Factor', 'Surprise_Factor_Z']].describe())
  
     print("\n[PHASE 2B -- CAUSAL ANALYSIS]")
+    # Use finance-specific threshold for stocks/forex (lower volatility assets)
+    threshold = (CONFIG.get('finance_dual_threshold', 0.1)
+                 if CONFIG.get('market_type') == 'finance'
+                 else CONFIG.get('dual_threshold', 0.2))
     run_causal_analysis_pipeline(
         dual_results_df=out,
         config=CONFIG,
@@ -448,8 +470,8 @@ def quick_run_dual(symbol=None, timeframe=None, limit=None):
         anomaly_col="Anomaly_Pred"
     )
     return result, out
- 
- 
+
+
 def quick_run_autoencoder():
     df, split_idx = prepare_data()
     result, results_df = run_autoencoder_hybrid(df)
@@ -499,7 +521,7 @@ def run_causal_analysis():
 if __name__ == "__main__":
 
     # Interactive asset selection -- use arrow keys to pick asset/timeframe/history
-    symbol, timeframe, limit = select_asset()
+    symbol, timeframe, limit, market_type = select_asset()
 
     # Option 1: Full pipeline (all models + causal analysis)
     # comparison_df, all_results = main()
@@ -527,5 +549,5 @@ if __name__ == "__main__":
     # Useful if you just want to tweak the SF_Z threshold without waiting for training.
 
     # Default: dual-LSTM + causal analysis on selected asset
-    result, out = quick_run_dual(symbol=symbol, timeframe=timeframe, limit=limit)
+    result, out = quick_run_dual(symbol=symbol, timeframe=timeframe, limit=limit, market_type=market_type)
     # Runs the dual-stream LSTM + causal analysis. Saves ROC curve, PR curve, confusion matrix. This is Phase 2A + 2B.

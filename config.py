@@ -36,7 +36,13 @@ CONFIG = {
     # ----------------------------------------------------------------
     'dual_epochs': 100,
     'dual_batch_size': 16,
-    'dual_threshold': 0.2,
+
+    # Anomaly classification threshold -- selected automatically based on market type.
+    # Crypto assets (BTC, ETH) are highly volatile so 0.2 works well.
+    # Finance assets (stocks, forex) move much less so need a lower threshold.
+    'crypto_dual_threshold':  0.2,   # used when market_type = 'crypto'
+    'finance_dual_threshold': 0.15,   # used when market_type = 'finance'
+    'dual_threshold':         0.2,   # default fallback (overwritten at runtime)
 
     # ----------------------------------------------------------------
     # PHASE 2B: CAUSAL ANALYSIS (Surprise Factor method)

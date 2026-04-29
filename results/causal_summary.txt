@@ -1,5 +1,5 @@
 CAUSAL ANALYSIS REPORT -- CS402 Senior Project
-Asset: BTC/USDT
+Asset: AAPL
 ============================================================
 
 METHOD
@@ -12,18 +12,17 @@ METHOD
 
 RESULTS
 ----------------------------------------
-  Total anomaly days   : 12
-  External shock       : 3  (25.0%)
-  Internal mechanics   : 9  (75.0%)
+  Total anomaly days   : 3
+  External shock       : 1  (33.3%)
+  Internal mechanics   : 2  (66.7%)
 
 SURPRISE FACTOR
 ----------------------------------------
-  All days mean SF     : 20.04%
-  Anomaly days mean SF : 18.37%
-  External mean SF     : 31.90%
-  Internal mean SF     : 13.86%
-  SF ratio (ext/int)   : 2.30x
-  Mann-Whitney p       : 0.0045  [SIGNIFICANT]
+  All days mean SF     : 3.71%
+  Anomaly days mean SF : 2.92%
+  External mean SF     : 7.54%
+  Internal mean SF     : 0.61%
+  SF ratio (ext/int)   : 12.32x
 
 INTERPRETATION
 ----------------------------------------
