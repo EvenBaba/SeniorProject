@@ -24,7 +24,7 @@ CONFIG = {
     'lstm_epochs': 100,
     'lstm_batch_size': 16,
     'unsup_k': 0.90,
-    'sup_threshold': 0.3,
+    'sup_threshold': 0.2,
     'ae_epochs': 100,
     'ae_batch_size': 32,
     'ae_threshold_quantile': 0.995,

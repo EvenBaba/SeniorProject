@@ -2,12 +2,12 @@
 LSTM Dual-Stream Model - CS402 Phase 2A
 ========================================
 Dual-output architecture with shared LSTM body:
-  - Stream 1: Anomaly Classifier  (sigmoid)   → detects anomalies
-  - Stream 2: Price Regressor     (linear)    → forecasts next-day Close price
+  - Stream 1: Anomaly Classifier  (sigmoid)   -> detects anomalies
+  - Stream 2: Price Regressor     (linear)    -> forecasts next-day Close price
 
-Surprise Factor = |actual_price - predicted_price| / actual_price × 100
-  → Quantifies how "surprised" the model was → validates anomaly severity.
-  → High Surprise Factor on an anomaly day = model was genuinely caught off guard.
+Surprise Factor = |actual_price - predicted_price| / actual_price x 100
+  -> Quantifies how "surprised" the model was -> validates anomaly severity.
+  -> High Surprise Factor on an anomaly day = model was genuinely caught off guard.
 """
 
 import numpy as np
@@ -27,8 +27,8 @@ def dual_lstm_dataset(df, lookback=100, train_ratio=0.9, label_col="Anomaly_Stat
     Prepare dataset for Dual-Stream LSTM.
 
     Two targets per sample:
-      y_anomaly : 0/1  — from Anomaly_Statistical column
-      y_price   : float — next-day Close price (scaled)
+      y_anomaly : 0/1  -- from Anomaly_Statistical column
+      y_price   : float -- next-day Close price (scaled)
 
     Scaler policy (NO data leakage):
       - x_scaler   : StandardScaler fitted ONLY on training feature rows
@@ -37,21 +37,21 @@ def dual_lstm_dataset(df, lookback=100, train_ratio=0.9, label_col="Anomaly_Stat
     Parameters
     ----------
     df          : DataFrame with features + Anomaly_Statistical column
-    lookback    : int   — sequence length (default 100)
-    train_ratio : float — train/test split ratio (default 0.9)
+    lookback    : int   -- sequence length (default 100)
+    train_ratio : float -- train/test split ratio (default 0.9)
 
     Returns
     -------
     X             : ndarray (samples, lookback, n_features)
-    y_anomaly     : ndarray (samples,)   — binary anomaly labels
-    y_price       : ndarray (samples,)   — scaled next-day Close
-    idx           : list                 — datetime index aligned with samples
+    y_anomaly     : ndarray (samples,)   -- binary anomaly labels
+    y_price       : ndarray (samples,)   -- scaled next-day Close
+    idx           : list                 -- datetime index aligned with samples
     x_scaler      : fitted StandardScaler for features
     price_scaler  : fitted StandardScaler for Close price
     """
 
     print("\n" + "=" * 80)
-    print("DUAL-STREAM LSTM — DATASET PREPARATION")
+    print("DUAL-STREAM LSTM -- DATASET PREPARATION")
     print("=" * 80)
 
     # ------------------------------------------------------------------
@@ -82,7 +82,7 @@ def dual_lstm_dataset(df, lookback=100, train_ratio=0.9, label_col="Anomaly_Stat
     print(f"  Test   : {n_samples - split_idx}  ({(1-train_ratio)*100:.0f}%)")
 
     # ------------------------------------------------------------------
-    # 2. Scaling — fit ONLY on training portion
+    # 2. Scaling -- fit ONLY on training portion
     # ------------------------------------------------------------------
     x_scaler = StandardScaler()
     x_scaler.fit(data.values[:split_idx])
@@ -135,13 +135,13 @@ def build_dual_lstm(input_shape):
     Architecture
     ------------
     Input (lookback, n_features)
-      → LSTM(128, return_sequences=True)
-      → Dropout(0.2)
-      → LSTM(64, return_sequences=False)
-      → Dropout(0.2)
-      → Dense(32, relu)          ← shared representation
-            ├── Dense(1, sigmoid, name='anomaly')   ← Head 1
-            └── Dense(1, linear,  name='price')     ← Head 2
+      -> LSTM(128, return_sequences=True)
+      -> Dropout(0.2)
+      -> LSTM(64, return_sequences=False)
+      -> Dropout(0.2)
+      -> Dense(32, relu)          <- shared representation
+            +-- Dense(1, sigmoid, name='anomaly')   <- Head 1
+            +-- Dense(1, linear,  name='price')     <- Head 2
 
     Parameters
     ----------
@@ -211,7 +211,7 @@ def train_dual_lstm(X, y_anomaly, y_price,
     Train the dual-stream model.
 
     An internal validation split (last 10% of training data) is used
-    for early stopping — strictly no test data leakage.
+    for early stopping -- strictly no test data leakage.
 
     Parameters
     ----------
@@ -271,7 +271,7 @@ def train_dual_lstm(X, y_anomaly, y_price,
         verbose=1
     )
 
-    print(f"\n  Training complete — {len(history.history['loss'])} epochs.")
+    print(f"\n  Training complete -- {len(history.history['loss'])} epochs.")
     return model, history
 
 
@@ -285,15 +285,15 @@ def compute_surprise_factor(price_pred_scaled, price_true_scaled,
     """
     Compute Surprise Factor from price regressor outputs.
 
-    Surprise Factor (%) = |actual_close - predicted_close| / actual_close × 100
+    Surprise Factor (%) = |actual_close - predicted_close| / actual_close x 100
 
     A Surprise Factor Z-score is also computed (using training error statistics)
     so severity can be compared across time.
 
     Parameters
     ----------
-    price_pred_scaled : ndarray  — model's scaled price predictions
-    price_true_scaled : ndarray  — true scaled prices
+    price_pred_scaled : ndarray  -- model's scaled price predictions
+    price_true_scaled : ndarray  -- true scaled prices
     price_scaler      : fitted StandardScaler for Close
     idx               : list of datetime indices (aligned with arrays)
     train_ratio       : used to split train stats from test stats
@@ -301,11 +301,11 @@ def compute_surprise_factor(price_pred_scaled, price_true_scaled,
     Returns
     -------
     sf_df : DataFrame with columns:
-        Close_True        — actual price (unscaled)
-        Close_Pred        — predicted price (unscaled)
-        Price_Error       — absolute price error
-        Surprise_Factor   — percentage deviation from actual price
-        Surprise_Factor_Z — z-scored surprise (using train error distribution)
+        Close_True        -- actual price (unscaled)
+        Close_Pred        -- predicted price (unscaled)
+        Price_Error       -- absolute price error
+        Surprise_Factor   -- percentage deviation from actual price
+        Surprise_Factor_Z -- z-scored surprise (using train error distribution)
     """
 
     # Inverse-transform to original price space
@@ -334,7 +334,7 @@ def compute_surprise_factor(price_pred_scaled, price_true_scaled,
     sf_df["Surprise_Factor"]   = surprise_factor
     sf_df["Surprise_Factor_Z"] = surprise_factor_z
 
-    print(f"\n[SURPRISE FACTOR STATISTICS — FULL SET]")
+    print(f"\n[SURPRISE FACTOR STATISTICS -- FULL SET]")
     print(f"  Mean  : {surprise_factor.mean():.4f} %")
     print(f"  Std   : {surprise_factor.std():.4f} %")
     print(f"  Max   : {surprise_factor.max():.4f} %  "
@@ -372,7 +372,7 @@ def test_dual_lstm(model, X_test, y_anomaly_test, y_price_test,
     """
 
     print("\n" + "=" * 80)
-    print("DUAL-STREAM LSTM — TEST")
+    print("DUAL-STREAM LSTM -- TEST")
     print("=" * 80)
 
     # --- Predict both heads ---
@@ -415,9 +415,9 @@ def test_dual_lstm(model, X_test, y_anomaly_test, y_price_test,
     if anom_mask.sum() > 0:
         sf_anom   = results_df.loc[anom_mask,   "Surprise_Factor"].mean()
         sf_normal = results_df.loc[normal_mask,  "Surprise_Factor"].mean()
-        print(f"\n  Surprise Factor — anomaly days : {sf_anom:.4f} %")
-        print(f"  Surprise Factor — normal  days : {sf_normal:.4f} %")
-        print(f"  Ratio (anomaly / normal)       : {sf_anom/sf_normal:.2f}×")
+        print(f"\n  Surprise Factor -- anomaly days : {sf_anom:.4f} %")
+        print(f"  Surprise Factor -- normal  days : {sf_normal:.4f} %")
+        print(f"  Ratio (anomaly / normal)       : {sf_anom/sf_normal:.2f}x")
 
     print("=" * 80 + "\n")
 
@@ -451,7 +451,7 @@ def run_dual_lstm_pipeline(df, config, label_col="Anomaly_Statistical"):
     """
 
     print("\n" + "=" * 80)
-    print("DUAL-STREAM LSTM PIPELINE — START")
+    print("DUAL-STREAM LSTM PIPELINE -- START")
     print("=" * 80)
 
     lookback    = config["lookback"]

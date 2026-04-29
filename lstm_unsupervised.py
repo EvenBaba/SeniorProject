@@ -22,12 +22,12 @@ def unsupervised_lstm_dataset(df, lookback=100, train_ratio=0.9):
     """
     Unsupervised LSTM (forecast) dataset - DATA LEAKAGE FIXED VERSION
     
-    X : son lookback günün tüm feature'lari
-    y : bugünün Close değeri (scaled)
+    X : all features from last lookback days
+    y : today's Close value (scaled)
     
     CRITICAL: Scaling ONLY on training data to prevent data leakage!
     """
-    # ---------- Feature seçimi (supervised ile AYNI) ----------
+    # ---------- Feature selection (same as supervised) ----------
     FEATURE_COLS = [
         c for c in df.columns
         if not c.startswith("Anomaly") and c != "Anomaly_Statistical"

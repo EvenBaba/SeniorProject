@@ -604,14 +604,14 @@ def create_evaluation_summary(comparison_df: pd.DataFrame,
         high_precision = comparison_df['Precision'].idxmax()
         high_recall = comparison_df['Recall'].idxmax()
         
-        summary.append(f"• For minimizing false alarms: Use {high_precision} "
+        summary.append(f"* For minimizing false alarms: Use {high_precision} "
                       f"(Precision = {comparison_df.loc[high_precision, 'Precision']:.4f})")
-        summary.append(f"• For catching all anomalies:  Use {high_recall} "
+        summary.append(f"* For catching all anomalies:  Use {high_recall} "
                       f"(Recall = {comparison_df.loc[high_recall, 'Recall']:.4f})")
     
     if 'F1-Score' in comparison_df.columns:
         high_f1 = comparison_df['F1-Score'].idxmax()
-        summary.append(f"• For balanced performance:    Use {high_f1} "
+        summary.append(f"* For balanced performance:    Use {high_f1} "
                       f"(F1-Score = {comparison_df.loc[high_f1, 'F1-Score']:.4f})")
     
     summary.append("")

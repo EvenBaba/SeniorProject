@@ -1,5 +1,5 @@
 """
-GROUND TRUTH LABELS — Known Real-World BTC Anomaly Events
+GROUND TRUTH LABELS -- Known Real-World BTC Anomaly Events
 ===========================================================
 Instead of relying on statistical methods (Z-Score / EWMA) to define
 what counts as an anomaly, this module uses documented, real-world
@@ -9,9 +9,9 @@ Each event is a date where BTC experienced a significant, news-driven
 price movement that is publicly verifiable.
 
 Event types:
-  crash    — sharp price drop driven by external event
-  pump     — sharp price rise driven by external event
-  volatile — extreme two-way volatility (e.g. halvings, regulatory decisions)
+  crash    -- sharp price drop driven by external event
+  pump     -- sharp price rise driven by external event
+  volatile -- extreme two-way volatility (e.g. halvings, regulatory decisions)
 """
 
 import pandas as pd
@@ -29,7 +29,7 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2023-03-10": {
-        "description": "Silvergate Bank and Silicon Valley Bank collapse — crypto banking fears, BTC drops",
+        "description": "Silvergate Bank and Silicon Valley Bank collapse -- crypto banking fears, BTC drops",
         "type": "crash"
     },
     "2023-03-17": {
@@ -37,7 +37,7 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2023-04-14": {
-        "description": "Ethereum Shapella upgrade completes — ETH staking withdrawals enabled, positive for crypto",
+        "description": "Ethereum Shapella upgrade completes -- ETH staking withdrawals enabled, positive for crypto",
         "type": "pump"
     },
 
@@ -47,11 +47,11 @@ KNOWN_BTC_EVENTS = {
         "type": "crash"
     },
     "2023-06-06": {
-        "description": "SEC sues Coinbase — continued regulatory sell-off across crypto markets",
+        "description": "SEC sues Coinbase -- continued regulatory sell-off across crypto markets",
         "type": "crash"
     },
     "2023-06-15": {
-        "description": "BlackRock files for Bitcoin spot ETF with SEC — major institutional signal",
+        "description": "BlackRock files for Bitcoin spot ETF with SEC -- major institutional signal",
         "type": "pump"
     },
     "2023-08-17": {
@@ -59,7 +59,7 @@ KNOWN_BTC_EVENTS = {
         "type": "crash"
     },
     "2023-08-29": {
-        "description": "US court rules SEC was wrong to reject Grayscale Bitcoin ETF — legal win for crypto",
+        "description": "US court rules SEC was wrong to reject Grayscale Bitcoin ETF -- legal win for crypto",
         "type": "pump"
     },
     "2023-10-16": {
@@ -67,7 +67,7 @@ KNOWN_BTC_EVENTS = {
         "type": "volatile"
     },
     "2023-10-23": {
-        "description": "BlackRock Bitcoin ETF ticker appears on DTCC website — renewed ETF speculation pump",
+        "description": "BlackRock Bitcoin ETF ticker appears on DTCC website -- renewed ETF speculation pump",
         "type": "pump"
     },
     "2023-12-05": {
@@ -81,7 +81,7 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2024-01-11": {
-        "description": "First trading day of Bitcoin Spot ETFs — record volume, high volatility",
+        "description": "First trading day of Bitcoin Spot ETFs -- record volume, high volatility",
         "type": "volatile"
     },
     "2024-02-28": {
@@ -97,15 +97,15 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2024-04-19": {
-        "description": "Pre-halving volatility — BTC drops sharply to around $60k",
+        "description": "Pre-halving volatility -- BTC drops sharply to around $60k",
         "type": "volatile"
     },
     "2024-04-20": {
-        "description": "Bitcoin fourth halving — block reward cut from 6.25 to 3.125 BTC",
+        "description": "Bitcoin fourth halving -- block reward cut from 6.25 to 3.125 BTC",
         "type": "volatile"
     },
     "2024-05-23": {
-        "description": "SEC approves Ethereum spot ETF applications — bullish signal for crypto broadly",
+        "description": "SEC approves Ethereum spot ETF applications -- bullish signal for crypto broadly",
         "type": "pump"
     },
     "2024-06-07": {
@@ -113,11 +113,11 @@ KNOWN_BTC_EVENTS = {
         "type": "crash"
     },
     "2024-07-05": {
-        "description": "German government begins selling confiscated BTC holdings — $3B supply overhang",
+        "description": "German government begins selling confiscated BTC holdings -- $3B supply overhang",
         "type": "crash"
     },
     "2024-07-16": {
-        "description": "German government completes BTC sales — selling pressure lifts, price rebounds",
+        "description": "German government completes BTC sales -- selling pressure lifts, price rebounds",
         "type": "pump"
     },
     "2024-08-05": {
@@ -129,15 +129,15 @@ KNOWN_BTC_EVENTS = {
         "type": "crash"
     },
     "2024-09-18": {
-        "description": "US Federal Reserve cuts interest rates 50 basis points — risk assets including BTC pump",
+        "description": "US Federal Reserve cuts interest rates 50 basis points -- risk assets including BTC pump",
         "type": "pump"
     },
     "2024-10-14": {
-        "description": "BTC breaks $65k resistance — momentum building ahead of US election",
+        "description": "BTC breaks $65k resistance -- momentum building ahead of US election",
         "type": "pump"
     },
     "2024-11-05": {
-        "description": "US Election Day — Trump wins presidency, BTC begins historic post-election rally",
+        "description": "US Election Day -- Trump wins presidency, BTC begins historic post-election rally",
         "type": "pump"
     },
     "2024-11-06": {
@@ -149,7 +149,7 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2024-12-05": {
-        "description": "BTC crosses $100k for the first time ever — historic milestone",
+        "description": "BTC crosses $100k for the first time ever -- historic milestone",
         "type": "pump"
     },
     "2024-12-17": {
@@ -157,13 +157,13 @@ KNOWN_BTC_EVENTS = {
         "type": "pump"
     },
     "2024-12-18": {
-        "description": "Fed signals fewer rate cuts in 2025 — BTC flash crashes from ~$108k",
+        "description": "Fed signals fewer rate cuts in 2025 -- BTC flash crashes from ~$108k",
         "type": "crash"
     },
 
     # ---- 2025 ----
     "2025-01-20": {
-        "description": "Trump inauguration — BTC volatile with initial pump then sharp correction",
+        "description": "Trump inauguration -- BTC volatile with initial pump then sharp correction",
         "type": "volatile"
     },
     "2025-01-23": {
@@ -179,19 +179,19 @@ KNOWN_BTC_EVENTS = {
         "type": "crash"
     },
     "2025-03-04": {
-        "description": "Trump announces US Strategic Bitcoin Reserve — executive order signed",
+        "description": "Trump announces US Strategic Bitcoin Reserve -- executive order signed",
         "type": "pump"
     },
     "2025-03-11": {
-        "description": "BTC drops below $80k as Strategic Reserve disappointment sets in — smaller than expected",
+        "description": "BTC drops below $80k as Strategic Reserve disappointment sets in -- smaller than expected",
         "type": "crash"
     },
     "2025-04-07": {
-        "description": "BTC crashes below $75k on global tariff war fears — Black Monday style selloff",
+        "description": "BTC crashes below $75k on global tariff war fears -- Black Monday style selloff",
         "type": "crash"
     },
     "2025-04-09": {
-        "description": "Trump pauses tariffs for 90 days — markets surge, BTC rebounds sharply",
+        "description": "Trump pauses tariffs for 90 days -- markets surge, BTC rebounds sharply",
         "type": "pump"
     },
 }
@@ -211,14 +211,14 @@ def create_ground_truth_labels(df, window_days=1, verbose=True):
     Parameters
     ----------
     df          : DataFrame with DatetimeIndex (from statistic.py)
-    window_days : int  — days around each event to also mark as anomaly
-                         (e.g. 1 means the event day ± 1 day)
-    verbose     : bool — print summary
+    window_days : int  -- days around each event to also mark as anomaly
+                         (e.g. 1 means the event day +/- 1 day)
+    verbose     : bool -- print summary
 
     Returns
     -------
     df : DataFrame with new column 'Anomaly_GroundTruth' (0/1)
-    event_report : DataFrame — which known events were found in the data
+    event_report : DataFrame -- which known events were found in the data
     """
 
     df = df.copy()
@@ -232,7 +232,7 @@ def create_ground_truth_labels(df, window_days=1, verbose=True):
     for date_str, info in KNOWN_BTC_EVENTS.items():
         event_date = pd.Timestamp(date_str)
 
-        # Mark event day ± window_days
+        # Mark event day +/- window_days
         for offset in range(-window_days, window_days + 1):
             target_date = event_date + pd.Timedelta(days=offset)
             mask = df_index_dates == target_date
@@ -260,7 +260,7 @@ def create_ground_truth_labels(df, window_days=1, verbose=True):
 
     if verbose:
         print("\n" + "=" * 80)
-        print("GROUND TRUTH LABELS — KNOWN BTC EVENTS")
+        print("GROUND TRUTH LABELS -- KNOWN BTC EVENTS")
         print("=" * 80)
 
         print(f"\n  Total known events defined : {len(KNOWN_BTC_EVENTS)}")
